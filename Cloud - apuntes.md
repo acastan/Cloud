@@ -238,7 +238,7 @@ INFRAESTRUCTURA GLOBAL
 
 Por favor, lee: <https://aws.amazon.com/about-aws/global-infrastructure/>
 
-Una region AWS es un área geogràfica localizada dentro de un país.
+Una región AWS es un área geográfica localizada dentro de un país.
 
 Cada región está formada por tres o más zonas de disponibilidad, que son lugares físicamente aislados dentro de dicha región.
 
@@ -246,7 +246,7 @@ Cada zona de disponibilidad está formada por uno o varios datacenters, y están
 
 Además de las regiones, AWS también tiene los llamados puntos de presencia, que son una especie de cachés de contenido o proveedores de contenido.
 
-Imagina, por ejemplo, que España sea una región AWS, y que disponga de datacenters en tres zonas de disponiblidad cerca de las regiones con más empresas: Barcelona, Madrid y Valencia. Pero que además disponga puntos de presencia cerca de otras ciudades importantes del estado, para acercar el contenido a los clientes y disminuir así la latencia.
+Imagina, por ejemplo, que España sea una región AWS, y que disponga de datacenters en tres zonas de disponibilidad cerca de las regiones con más empresas: Barcelona, Madrid y Valencia. Pero que además disponga puntos de presencia cerca de otras ciudades importantes del estado, para acercar el contenido a los clientes y disminuir así la latencia.
 
 
 ---
@@ -308,7 +308,7 @@ Cuando creamos una nueva VPC, ésta ocupa toda la región en la que trabajamos, 
 
 Cuando creamos una subred dentro de la VPC, dicha subred ocupa una zona de disponibilidad dentro de la región, y dispone de un subrango de IPs dentro del rango de IPs de la VPC.
 
-En dichas redes y subredes virtuales podemos colocar instancias de cómputo EC2 y bases de datos RDS. Otros servicios, como por ejemplo Lambda, son externos a las VPC.
+En dichas redes y subredes virtuales podemos alojar instancias de cómputo EC2 y bases de datos RDS. Otros servicios, como por ejemplo Lambda, son externos a las VPC.
 
 Toda VPC automáticamente tiene un router asociado, con una tabla de enrutamiento.
 
@@ -319,9 +319,31 @@ En Amazon cada rango de IPs tiene cinco IPs reservadas, en lugar de dos:
   * La cuarta (.3))está reservada para algún uso futuro.
   * La última (.255) es la dirección de broadcast.
 
-Una manera de hacer accesibles des del exterior instancias de la VPC es colocarlas en una subred pública, esto és, una subred que además de tenenr IPs privadas tiene también IPs públicas y con una puerta de enlace a internet ("Internet gateway") asociada. Una vez tenemos puerta de enlace, podemos añadir una entrada a la tabla de enrutamiento de la VPC que diga que todo el tráfico no local (0.0.0.0/0) lo redirija al Internet Gateway, que hará NAT para las instancias.
+Una manera de hacer accesibles des del exterior instancias de la VPC es colocarlas en una subred pública, esto es, una subred que además de tener IPs privadas tiene también IPs públicas y a la que se asocia una puerta de enlace a internet ("Internet gateway"). Una vez tenemos puerta de enlace, podemos añadir una entrada a la tabla de enrutamiento de la VPC que diga que todo el tráfico no local (0.0.0.0/0) lo redirija al Internet Gateway, que hará NAT para las instancias.
 
 Una manera de hacer que una instancia tenga una IP pública estática que no cambie, es asignarle una IP elástica. La IP elástica se puede reasignar a otra instancia o a un balanceador de carga.
+
+Los recursos que no queremos que sean accesibles des de Internet los podemos colocar en una subred privada. En la subred privada sólo tendrán IP privada, y tampoco los recursos podrán acceer a Internet a menos que asociemos dicha subred a un NAT Gateway e incorporemos una regla a la tabla de enrutamimiento de la subred.
+
+En las VPC tenemos dos tipos de cortafuegos: cortafuegos de red ("Acces Control Lists") que protegen una subred, y cortafuegos personales ("Security Groups") que protegen una instancia de cómputo EC2.
+
+Los Security Groups:
+
+  * Son cortafuegos con estado: si con una regla permito un determinado tráfico de petición hacia un servicio, automáticamente también estoy permitiendo el tráfico de respuesta a dicha petición.
+
+  * La política por defecto es restrictiva así que las reglas que añadimos son para permitir tráfico. Si el paquete no encaja con ninguna regla, se deniega.
+
+  * Cuando creamos un security group, por defecto no tiene ninguna regla que permita el tráfico de entrada, y tiene una regla que permite todo el tráfico de salida. Así que por defecto todo el tráfico de entrada está bloqueado y todo el tráfico de salida está permitido.
+
+Los Access Control List:
+
+  * Son cortafuegos sin estado: si con una regla permito un determinado tráfico de petición hacia un servicio, también debo crear otra regla que permita el tráfico de respuesta a dicha petición, o si no la respuesta quedará bloqueada.
+
+ * Podemos añadir reglas tanto para permitir como para denegar tráfico de entrada y de salida.
+
+  * Toda VPC y toda subred tiene asociado un ACL. Un ACL por defecto tiene dos reglas para tráfico de entrada y dos reglas para tráfico de salida: una regla con número de orden 100 que permite tráfico a todos los puertos, y una regla * que deniega todo el tráfico que no encaje con reglas anteriores. Así que por defecto todo el tráfico de entrada y salida está permitido.
+
+Existe un servicio más avanzado de cortafuegos de red, de pago, que también detecta y previene intrusiones, llamado [AWS Network Firewall](https://docs.aws.amazon.com/network-firewall/latest/developerguide/what-is-aws-network-firewall.html).
 
 ¿Cómo implementaría un montaje como éste, con un servidor web en una subred pública y otro servidor web en una subred privada?
 
