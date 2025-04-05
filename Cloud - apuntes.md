@@ -68,7 +68,7 @@ SaaS: te ofrece una aplicación. Un ejemplo de SaaS es GMail. El proveedor se re
 
 Aquí tienes los [nombres de los servicios en cada Cloud](https://comparecloud.in/) y aquí otra [comparación de los servicios en cada Cloud](https://cloudcomparisontool.com/).
 
-Los [servicios de AWS clasificados](https://docs.aws.amazon.com/whitepapers/latest/aws-overview/amazon-web-services-cloud-platform.html). De ellos veremos:
+Y aquí tienes los [servicios de AWS clasificados](https://docs.aws.amazon.com/whitepapers/latest/aws-overview/amazon-web-services-cloud-platform.html). De ellos veremos:
 
   * Amazon EC2 (Elastic Cloud Compute)
   * Amazon VPC (Virtual Private Cloud)
@@ -175,7 +175,7 @@ Todas las tecnologías de Cloud ofrecen una API REST, de más bajo nivel que su 
 
 
 
-###  Interaccionar con IaC
+### Interaccionar con IaC
 
 IaC is an approach to provision and manage resources such as cloud infrastructure. It allows you to define and deploy your resources using human-readable definition files or code. IaC allows a declarative specification of the desired infrastructure state. This means compute instances, storage, networking, security groups, and other cloud services.
 
@@ -287,7 +287,7 @@ Design principles for security pillar
 
 Con las políticas de IAM, puede permitir o denegar el acceso a servicios de AWS (como Amazon S3), recursos individuales de AWS (como un bucket de S3 específico) o acciones individuales de API (como s3:CreateBucket). Una política de IAM solo puede aplicarse a usuarios, grupos, o roles de IAM, y no podrá restringir al administrador de AWS.
 
-[Simulador de políticas IAM](https://signin.aws.amazon.com/)
+[Simulador de políticas IAM](https://policysim.aws.amazon.com/)
 
 AWS Organizations es una especie de Directorio, con la raíz, las Unidades Organizativas (OU), y las cuentas. Permite aplicar políticas a las OU y a las cuentas. También permite agrupar cuentas y aplicar políticas a dichos grupos. Además, también permite facturación unificada.
 
@@ -300,6 +300,12 @@ Pero además, con AWS Organizations, se pueden utilizar políticas de control de
 REDES
 -----
 
+En este punto comentaré las herramientas de Cloud que tiene que ver con redes: creación de redes virtuales para disponer en ellas máquinas virtuales y bases de datos; servicio de DNS; y puntos de presencia ("COntent Delivery Netwoks"). Los nombres corresponden a los que reciben en AWS.
+
+
+
+### Redes virtuales
+
 Por favor, lee: <https://docs.aws.amazon.com/vpc/latest/userguide/what-is-amazon-vpc.html>
 
 Una red virtual (VPC) emula una red física, utilizando componentes de red *definidos por software*: switches, routers, cortafuegos, y balanceadores de carga.
@@ -308,9 +314,9 @@ Cuando creamos una nueva VPC, ésta ocupa toda la región en la que trabajamos, 
 
 Cuando creamos una subred dentro de la VPC, dicha subred ocupa una zona de disponibilidad dentro de la región, y dispone de un subrango de IPs dentro del rango de IPs de la VPC.
 
-En dichas redes y subredes virtuales podemos alojar instancias de cómputo EC2 y bases de datos RDS. Otros servicios, como por ejemplo Lambda, son externos a las VPC.
+En dichas redes y subredes virtuales podemos alojar instancias de cómputo EC2 y bases de datos RDS. Otros servicios, como por ejemplo Lambda o S3, son externos a las VPC.
 
-Toda VPC automáticamente tiene un router asociado, con una tabla de enrutamiento.
+Toda VPC y toda subred automáticamente tienen una tabla de enrutamiento asociada.
 
 En Amazon cada rango de IPs tiene cinco IPs reservadas, en lugar de dos:
   * La primera (.0) es la dirección de la red.
@@ -319,7 +325,7 @@ En Amazon cada rango de IPs tiene cinco IPs reservadas, en lugar de dos:
   * La cuarta (.3))está reservada para algún uso futuro.
   * La última (.255) es la dirección de broadcast.
 
-Una manera de hacer accesibles des del exterior instancias de la VPC es colocarlas en una subred pública, esto es, una subred que además de tener IPs privadas tiene también IPs públicas y a la que se asocia una puerta de enlace a internet ("Internet gateway"). Una vez tenemos puerta de enlace, podemos añadir una entrada a la tabla de enrutamiento de la VPC que diga que todo el tráfico no local (0.0.0.0/0) lo redirija al Internet Gateway, que hará NAT para las instancias.
+Una manera de hacer accesibles des del exterior las instancias de cómputo EC2 (máquinas virtuales) en la VPC es colocarlas en una subred pública, esto es, una subred que además de tener IPs privadas tiene también IPs públicas y a la que se asocia una puerta de enlace a internet ("Internet gateway"). Una vez tenemos puerta de enlace, podemos añadir una entrada a la tabla de enrutamiento de la VPC que diga que todo el tráfico no local (0.0.0.0/0) lo redirija al Internet Gateway, que hará NAT para las instancias.
 
 Una manera de hacer que una instancia tenga una IP pública estática que no cambie, es asignarle una IP elástica. La IP elástica se puede reasignar a otra instancia o a un balanceador de carga.
 
@@ -339,7 +345,7 @@ Los Access Control List:
 
   * Son cortafuegos sin estado: si con una regla permito un determinado tráfico de petición hacia un servicio, también debo crear otra regla que permita el tráfico de respuesta a dicha petición, o si no la respuesta quedará bloqueada.
 
- * Podemos añadir reglas tanto para permitir como para denegar tráfico de entrada y de salida.
+  * Podemos añadir reglas tanto para permitir como para denegar tráfico de entrada y de salida.
 
   * Toda VPC y toda subred tiene asociado un ACL. Un ACL por defecto tiene dos reglas para tráfico de entrada y dos reglas para tráfico de salida: una regla con número de orden 100 que permite tráfico a todos los puertos, y una regla * que deniega todo el tráfico que no encaje con reglas anteriores. Así que por defecto todo el tráfico de entrada y salida está permitido.
 
@@ -367,6 +373,42 @@ Existe un servicio más avanzado de cortafuegos de red, de pago, que también de
 
  09. Security Group 2: adjuntar a VPC , añadir regla aceptar "Inbound HTTP from Security Group 1" , adjuntar a la instancia EC2 en Subnet 2
 
+¿Cómo puedo acceder a un servicio externo a la VPC, por ejemplo a un bucket S3 o una tabla DynamoDB, des de una instancia de cómputo EC2 que se encuentra dentro de una VPC? Aunque no existe una conectividad directa entre ellos, la instancia EC2 puede acceder a los servicios externos a la VPC a través de la URL de éstos. Pero entonces la petición será enrutada a través de Internet, incurriendo en costes de transferencia de datos y baja velocidad. Para solucionar este problema podemos crear una conexión directa entre servicios internos y externos a la VPC utilizando [Interface VPC Endpoints](https://docs.aws.amazon.com/vpc/latest/privatelink/create-interface-endpoint.html) y [Gateway VPC Endpoints](https://docs.aws.amazon.com/vpc/latest/privatelink/gateway-endpoints.html), que aquí no explicaré.
+
+
+
+### DNS
+
+Todos los proveedores de cloud ofrecen servicio de DNS. En Amazon este servicio se llama [Route 53](https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/). DNS nos permite acceder a los servicios e instancias mediante la URL que el proveedor de cloud les otorga.
+
+En el caso que hayamos comprado un dominio a través de un registrador, podemos gestionar los nombres de nuestros servicios AWS en el DNS del registrador, pero también podemos hacer que el DNS del registrador delegue y apunte al servidor DNS del proveedor de cloud y manejar más cómodamente ahí nuestros registros DNS.
+
+En un DNS normal estamos acostumbrados a usar registros que asocian un nombre a una IP única:
+
+    nombre    A    IP
+
+Sin embargo, en Route 53 y otros DNS de proveedores cloud, un nombre puede tener asociadas varias IPs diferentes con réplicas del mismo servicio:
+
+    nombre    A    IP_1
+    nombre    A    IP_2
+    nombre    A    IP_3
+
+De tal manera que cuando un cliente pregunta al DNS por el nombre de una máquina para saber su IP se pueden hacer cosas como:
+
+  * "Balancear la carga", y que a cada pregunta por el mismo nombre el DNS de una IP diferente.
+
+  * En caso de servicios replicados en diferentes regiones, dar la IP con geolocalización más cercana al cliente, o con menor latencia.
+
+  * Monitorizar una IP y si su servicio asociado "cae", resolver a otra de las IPs de la lista.
+
+
+
+### Puntos de presencia
+
+Los puntos de presencia, fuera de los centros de cálculo de las regiones, actúan a modo de [proxy-caché](https://es.wikipedia.org/wiki/Servidor_proxy#Proxy_cach%C3%A9) o de [red de distribución de contenidos](https://es.wikipedia.org/wiki/Red_de_distribuci%C3%B3n_de_contenidos), acercando la información a los clientes. En Amazon este servicio se llama [CloudFront](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/).
+
+Si contratamos CloudFront nuestros clientes ganarán en velocidad de acceso a los datos pero nosotros pagaremos por transferencia de datos y por peticiones HTTPS. Sin embargo, con CloudFront podemos hacer cosas como asociar una URL a una página web almacenada en un bucket S3, y entonces servir dicha web sin necesidad de una instancia EC2 con un servidor web.
+
 
 ---
 
@@ -374,7 +416,33 @@ Existe un servicio más avanzado de cortafuegos de red, de pago, que también de
 CÓMPUTO
 -------
 
+En este punto comentaré las herramientas de Cloud que permiten ejecutar aplicaciones: máquinas virtuales; contenedores; servidores de aplicaciones; y lo que ha venido a llamarse "serverless computing". Los nombres corresponden a los que reciben en AWS.
+
+
+
+### Máquinas virtuales
+
+EC2 , LOAD BALANCING Y ESCALADO
+
 Por favor, lee: <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/concepts.html>
+
+
+
+### Contenedores
+
+ECS , FARGATE, PRIVATE REGISTRY Y KUBERNETES
+
+
+
+### Servidor de aplicaciones web
+
+BEANSTALK
+
+
+
+### Serverless computing
+
+LAMBDA
 
 
 ---
