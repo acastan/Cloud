@@ -306,7 +306,7 @@ En este punto comentaré las herramientas de Cloud que tiene que ver con redes: 
 
 ### Redes virtuales
 
-Por favor, lee: <https://docs.aws.amazon.com/vpc/latest/userguide/what-is-amazon-vpc.html>
+Por favor, lee: [Virtual Private Cloud (VPC)](https://docs.aws.amazon.com/vpc/latest/userguide/what-is-amazon-vpc.html)
 
 Una red virtual (VPC) emula una red física, utilizando componentes de red *definidos por software*: switches, routers, cortafuegos, y balanceadores de carga.
 
@@ -422,27 +422,35 @@ En este punto comentaré las herramientas de Cloud que permiten ejecutar aplicac
 
 ### Máquinas virtuales
 
-EC2 , LOAD BALANCING Y ESCALADO
+Por favor, lee: [Elastic Cloud Compute (EC2)](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/concepts.html)
 
-Por favor, lee: <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/concepts.html>
+Por favor, lee: [Elastic Load Balancing (ELB)](https://docs.aws.amazon.com/elasticloadbalancing/latest/userguide/)
+
+Por favor, lee: [Auto Scaling](https://docs.aws.amazon.com/autoscaling/ec2/userguide/)
 
 
 
 ### Contenedores
 
-ECS , FARGATE, PRIVATE REGISTRY Y KUBERNETES
+Por favor, lee: [Elastic Container Service (ECS)](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/)
+
+Por favor, lee: [Fargate](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/AWS_Fargate.html)
+
+Por favor, lee: [Elastic Registry Service (ERS)](https://docs.aws.amazon.com/AmazonECR/latest/userguide/)
+
+Por favor, lee: [Elastic Kubernetes Service (EKS)](https://docs.aws.amazon.com/eks/latest/userguide/)
 
 
 
 ### Servidor de aplicaciones web
 
-BEANSTALK
+Por favor, lee: [Elastic Beanstalk](https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/)
 
 
 
 ### Serverless computing
 
-LAMBDA
+Por favor, lee: [Lambda](https://docs.aws.amazon.com/lambda/latest/dg/)
 
 
 ---
@@ -451,7 +459,21 @@ LAMBDA
 ALMACENAMIENTO
 --------------
 
-Por favor, lee: <https://docs.aws.amazon.com/AmazonS3/latest/userguide/Welcome.html>
+### Almacenamiento de objetos
+
+Por favor, lee: [Simple Storage Service (S3)](https://docs.aws.amazon.com/AmazonS3/latest/userguide/)
+
+
+
+### Almacenamiento de bloques (discos duros para instancias EC2)
+
+Por favor, lee: [Elastic Block Store (EBS)](https://docs.aws.amazon.com/ebs/latest/userguide/)
+
+
+
+### Almacenamiento en servidor de ficheros (MFS para instancias EC2)
+
+Por favor, lee: [Elastic File System (EFS)](https://docs.aws.amazon.com/efs/latest/ug/)
 
 
 ---
@@ -460,7 +482,15 @@ Por favor, lee: <https://docs.aws.amazon.com/AmazonS3/latest/userguide/Welcome.h
 BASES DE DATOS
 --------------
 
-Por favor, lee: <https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Welcome.html>
+### Bases de datos relacionales
+
+Por favor, lee: [Relational Database Services (RDS)](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/)
+
+
+
+### Bases de datos no relacionales (NOSQL)
+
+Por favor, lee: [DynamoDB](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/)
 
 
 ---
