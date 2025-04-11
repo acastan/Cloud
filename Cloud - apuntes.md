@@ -229,6 +229,16 @@ La [calculadora de precios](https://calculator.aws/#/) permite hacer estimacione
 
 El panel de facturación de AWS te permite ver el estado de tus gastos de AWS del mes hasta la fecha, e identificar los servicios que forman parte de dichos gastos.
 
+He aquí precios para los servicios más comunes:
+
+  * [Precios de redes VPC](https://aws.amazon.com/vpc/pricing/)
+
+  * [Precios de cómputo EC2](https://aws.amazon.com/ec2/pricing/)
+
+  * [Precios de bases de datos RDS](https://aws.amazon.com/rds/pricing/)
+
+  * [Precios de almacenamiento S3](https://aws.amazon.com/s3/pricing/)
+
 
 ---
 
@@ -418,6 +428,22 @@ CÓMPUTO
 
 En este punto comentaré las herramientas de Cloud que permiten ejecutar aplicaciones: máquinas virtuales; contenedores; servidores de aplicaciones; y lo que ha venido a llamarse "serverless computing". Los nombres corresponden a los que reciben en AWS.
 
+  * Amazon Elastic Compute Cloud (Amazon EC2), permite aprovisionar máquinas virtuales (IaaS).
+  
+  * Amazon EC2 Auto Scaling permitir definir condiciones que iniciarán o terminarán las instancias de EC2 de manera automática, permitiendo mejorar la disponibilidad de las aplicaciones en momentos de gran carga, y mejorar el ahorro en momentos de poca carga.
+
+  * Amazon Elastic Container Service (Amazon ECS) es un servicio de contenedores compatible con Docker. Dichos contenedores se ejecutan en instancias EC2.
+
+  * AWS Fargate proporciona una forma de ejecutar contenedores que reducen la necesidad de administrar servidores o clústeres.
+
+  * Amazon Elastic Container Registry (Amazon ECR) es un registro privado para almacenar y recuperar imágenes de Docker. 
+
+  * Amazon Elastic Kubernetes Service (Amazon EKS) le permite ejecutar Kubernetes en la nube AWS.
+
+  * AWS Elastic Beanstalk proporciona una forma sencilla de ejecutar y administrar aplicaciones web.
+
+  * AWS Lambda es una opción de cómputo sin servidor. Permite escribir código que se ejecuta de forma programada o que se desencadena mediante eventos. Solo pagas por el tiempo de cómputo que utilizas.
+
 
 
 ### Máquinas virtuales
@@ -427,6 +453,49 @@ Por favor, lee: [Elastic Cloud Compute (EC2)](https://docs.aws.amazon.com/AWSEC2
 Por favor, lee: [Elastic Load Balancing (ELB)](https://docs.aws.amazon.com/elasticloadbalancing/latest/userguide/)
 
 Por favor, lee: [Auto Scaling](https://docs.aws.amazon.com/autoscaling/ec2/userguide/)
+
+Amazon EC2 proporciona máquinas virtuales en la nube. Es una forma de infraestructura como servicio (IaaS), así que estarás a cargo de la administración del servidor. Puedes elegir el sistema operativo, el tamaño y las capacidades de los recursos de los servidores que lances. En la máquina virtual puedes alojar los mismos tipos de aplicaciones que podría ejecutar en un servidor en las instalaciones locales tradicionales, entre otros: servidores de aplicaciones, servidores web, servidores de bases de datos, servidores de juegos, servidores de correo, servidores multimedia, servidores de archivos, servidores de logs, servidores de cálculo, servidores proxy, etc. Se [paga por la capacidad de la máquina virtual](https://instances.vantage.sh/) y por el tiempo que está activa.
+
+Los pasos en el lanzamiento de una instancia son:
+
+ 1. Seleccionar una imagen de máquina de Amazon (AMI):
+    - Inicio rápido (AMI de Linux y Windows que proporciona AWS),
+    - mis AMI (cualquier AMI que haya creado),
+    - AWS Marketplace (plantillas reconfiguradas de terceros),
+    - AMI de la comunidad (AMI que comparten los demás; utilícelas bajo su propio riesgo).
+
+ 2. Seleccionar un [tipo de instancia](https://aws.amazon.com/ec2/instance-types/). El tipo de instancia que elijas determina lo siguiente:
+    - Memoria (RAM),
+    - potencia de procesamiento (CPU),
+    - espacio en disco y tipo de disco (almacenamiento), y
+    - rendimiento de red.
+
+    Existen categorías de tipos de instancia:
+    - instancias de propósito general (familias a, m, t),
+    - optimizadas para cálculo (familia c),
+    - optimizadas para memoria (familias r, x, z),
+    - optimizadas para almacenamiento (familias d, h, i), y
+    - con cómputo acelerado (familias f, g, p).
+    
+    El nombre de instancia indica la familia, la generación, y tamaño. Por ejemplo, una imagen llamada t3.large es una instancia de propósito general (familia T), con hardware de tercera generación (3), con 2 cpu y 8 Gb de RAM (Large). 
+
+ 3. Especificar la configuración de red: en qué región, VPC y subred colocaremos la instancia.
+
+ 4. Especificar almacenamiento, para especificar en qué volumen está la carpeta raíz, cuál es el espacio de disco y la tecnología del disco, si añadimos discos adicionales, o si el volumen está cifrado.
+
+ 5. Identificar o crear el par de claves pública-privada para acceder a la máquina vía SSH. La privada se ha de descargar y guardar en un lugar seguro. Si la clave se pierde no hay manera de recuperarla después, en la ventana de propiedades de la máquina virtual.
+
+ 6. Configuración del grupo de seguridad, que es el cortafuegos personal de la máquina virtual.
+
+ 7. Adjuntar rol de IAM, en caso que la instancia EC2 deba acceder a algún recurso, para que disponga de los permisos necesarios.
+
+ 8. Script de datos de usuario (opcional). Cuando se crea una máquina virtual, podemos ejecutAr un script que automatice algunas tareas, como instalar algún software o crear unos usuarios, y así no tener que escribir los comandos a mano.
+
+ 9. Agregar etiquetas (opcional). Se pueden asociar pares clave-valor a la instancia, que luego podemos utilizar para buscar y filtrar instancias.
+
+Una vez lanzada una máquina virtual, si dentro de ella accedemos a http://169.254.169.254/latest/meta-data/ , dicha máquina puede acceder a muchos datos de su configuración.
+
+Las métricas de las instancias se monitorizan en Amazon CloudWatch.
 
 
 
