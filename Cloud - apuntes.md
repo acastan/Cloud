@@ -568,7 +568,7 @@ Por favor, lee: [Elastic Block Store (EBS)](https://docs.aws.amazon.com/ebs/late
 
 
 
-### Almacenamiento en servidor de ficheros (MFS para instancias EC2)
+### Almacenamiento en servidor de ficheros ([NFS](https://es.wikipedia.org/wiki/Network_File_System) para instancias EC2)
 
 Por favor, lee: [Elastic File System (EFS)](https://docs.aws.amazon.com/efs/latest/ug/)
 
