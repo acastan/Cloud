@@ -459,10 +459,10 @@ Amazon EC2 proporciona máquinas virtuales en la nube. Es una forma de infraestr
 Los pasos en el lanzamiento de una instancia son:
 
  1. Seleccionar una imagen de máquina de Amazon (AMI):
-    - Inicio rápido (AMI de Linux y Windows que proporciona AWS),
-    - mis AMI (cualquier AMI que haya creado),
-    - AWS Marketplace (plantillas reconfiguradas de terceros),
-    - AMI de la comunidad (AMI que comparten los demás; utilícelas bajo su propio riesgo).
+    - AMI de inicio rápido (plantillas de Linux y Windows que proporciona AWS).
+    - Mis AMI (cualquier plantilla que hayas creado y guardado).
+    - AWS Marketplace (plantillas vendidas por terceros y comprobadas por AWS).
+    - AMI de la comunidad (plantillas que comparten los demás; utilízalas bajo tu propio riesgo).
 
  2. Seleccionar un [tipo de instancia](https://aws.amazon.com/ec2/instance-types/). El tipo de instancia que elijas determina lo siguiente:
     - Memoria (RAM),
@@ -471,11 +471,11 @@ Los pasos en el lanzamiento de una instancia son:
     - rendimiento de red.
 
     Existen categorías de tipos de instancia:
-    - instancias de propósito general (familias a, m, t),
-    - optimizadas para cálculo (familia c),
-    - optimizadas para memoria (familias r, x, z),
-    - optimizadas para almacenamiento (familias d, h, i), y
-    - con cómputo acelerado (familias f, g, p).
+    - Instancias de propósito general (familias M y T), por ejemplo para servidores web, pruebas, aplicaciones de propósito general, etc.
+    - Optimizadas para cálculo (familia C), por ejemplo para proceso por lotes, supercomputación, servidores de juego multijugador, codificación de vídeo, etc.
+    - Optimizadas para memoria (familias R, X, Z), por ejemplo para análisis de Big Data, cachés en memoria, bases de datos en memoria, etc.
+    - Optimizadas para almacenamiento (familias D, H, I), por ejemplo para enormes bases de datos distribuidas, etc.
+    - Con cómputo acelerado mediante coprocesadores y GPUs (familias F, G, P), por ejemplo para inteligencia artificial, renderizado de gráficos, etc.
     
     El nombre de instancia indica la familia, la generación, y tamaño. Por ejemplo, una imagen llamada t3.large es una instancia de propósito general (familia T), con hardware de tercera generación (3), con 2 cpu y 8 Gb de RAM (Large). 
 
@@ -489,13 +489,33 @@ Los pasos en el lanzamiento de una instancia son:
 
  7. Adjuntar rol de IAM, en caso que la instancia EC2 deba acceder a algún recurso, para que disponga de los permisos necesarios.
 
- 8. Script de datos de usuario (opcional). Cuando se crea una máquina virtual, podemos ejecutAr un script que automatice algunas tareas, como instalar algún software o crear unos usuarios, y así no tener que escribir los comandos a mano.
+ 8. Script de datos de usuario (opcional). Cuando se crea una máquina virtual, podemos ejecutar un script que automatice algunas tareas, como instalar algún software o crear unos usuarios, y así no tener que escribir los comandos a mano.
 
  9. Agregar etiquetas (opcional). Se pueden asociar pares clave-valor a la instancia, que luego podemos utilizar para buscar y filtrar instancias.
+
+El seguiente ejemplo de AWS CLI lanza una instancia:
+
+    aws ec2 run-instances \
+      --image-id ami-1a2b3c4d \
+      --count 1 \
+      --instance-type c3.large \
+      --key-name MyKeyPair \
+      --security-groups MySecurityGroup \
+      --region us-east-1
 
 Una vez lanzada una máquina virtual, si dentro de ella accedemos a http://169.254.169.254/latest/meta-data/ , dicha máquina puede acceder a muchos datos de su configuración.
 
 Las métricas de las instancias se monitorizan en Amazon CloudWatch.
+
+Además de pagar por capacidad hardware de la instancia y por tiempo de uso, también la manera en que se pidió la instancia incide en el precio final. Se pueden solicitar instancias de cuatro maneras. De mayor a menor costo estas maneras son:
+
+  * Alojamientos dedicados, que son servidores físicos con hardware dedicado a un único cliente. No ejecutaran instancias de otra organización más que la tuya. Son una buena opción cuando existen restricciones de licencia para el software que desea ejecutar en Amazon EC2 o cuando tienes requisitos normativos o de cumplimiento específicos que le impiden utilizar las demás opciones de implementación.
+
+  * Instancias bajo demanda, que son las instancias que levantas cuando las necesitas. Son una buena opción para aplicaciones con cargas de trabajo a corto plazo, con picos de demanda o impredecibles, o para pruebas. Ofrecen la mayor flexibilidad, sin contratos y con tarifas bajas. 
+
+  * Instancias reservadas, que te permiten reservar capacidad de cómputo durante un año o tres años, con costos de funcionamiento menores por hora. Si esperas un uso predecible o estable, pueden proporcionar ahorros sustanciales en comparación con las instancias bajo demanda. Pagas por el tiempo en que se programan las instancias, incluso si no las utilizas. 
+
+  * Instancias de spot, que te permiten pujar por instancias EC2 no utilizadas, lo que reduce los costos de manera significativa. Son una buena opción si tus aplicaciones pueden tolerar interrupciones con una notificación de advertencia de 2 minutos. De forma predeterminada, las instancias se terminan, pero puedes configurarlas para que se detengan o hibernen.
 
 
 
@@ -509,17 +529,25 @@ Por favor, lee: [Elastic Registry Service (ERS)](https://docs.aws.amazon.com/Ama
 
 Por favor, lee: [Elastic Kubernetes Service (EKS)](https://docs.aws.amazon.com/eks/latest/userguide/)
 
+AWS ofrece un servicio de contenedores Docker (ECS), un registro privado para almacenar imágenes Docker (ERS), y orquestación de contenedores mediante Kubernetes (EKS).
+
+En ECS los contenedores se ejecutan sobre máquinas virtuales EC2, que también hay que administrar escogiendo cuántas instancias EC2 queremos para ejecutar los contenedores, de qué tipo, con qué imagen del S.O., etc. Sin embargo, para gente que tan sólo quiere administrar los contenedores, AWS ofrece Fargate, que también es un servicio de contenedores Docker pero donde permanecen ocultas las instancias EC2 y sólo vemos contenedores.
+
 
 
 ### Servidor de aplicaciones web
 
 Por favor, lee: [Elastic Beanstalk](https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/)
 
+AWS Elastic Beanstalk proporciona una plataforma (PaaS) que facilita la implementación rápida de aplicaciones web. AWS administra el sistema operativo, el servidor de aplicaciones, la escalabilidad, y los demás componentes de la infraestructura para que usted pueda centrarse en desarrollar el código de la aplicación.
+
 
 
 ### Serverless computing
 
 Por favor, lee: [Lambda](https://docs.aws.amazon.com/lambda/latest/dg/)
+
+AWS Lambda es una plataforma de cómputo que no requiere ningún tipo de administración. AWS Lambda le permite ejecutar código que se activa ante eventos AWS sin necesidad de aprovisionar ni administrar servidores. Solo paga por el tiempo de cómputo que consume. Este concepto posibilita una escalabilidad masiva a un costo menor que el de la ejecución ininterrumpida de servidores para respaldar las mismas cargas de trabajo.
 
 
 ---
