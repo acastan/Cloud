@@ -556,9 +556,84 @@ AWS Lambda es una plataforma de cómputo que no requiere ningún tipo de adminis
 ALMACENAMIENTO
 --------------
 
+Hay tres tipos de almacenamiento:
+
+  * Almacenamiento en bloques, donde los datos se guardan en un dispositivo en bloques de tamaño fijo, como por ejemplo los discos duros de las máquinas virtuales (EBS).
+
+  * Almacenamiento de ficheros, donde los datos se guardan en una estructura jerárquica en carpetas y subcarpetas, como por ejemplo un disco de red compartido (EFS).
+
+  * Almacenamiento de objetos, donde los datos se guardan como objetos utilizando además metadatos y una clave identificadora del objeto, como por ejemplo un alojamiento web de ficheros (S3).
+
+
+
 ### Almacenamiento de objetos
 
 Por favor, lee: [Simple Storage Service (S3)](https://docs.aws.amazon.com/AmazonS3/latest/userguide/)
+
+Amazon S3 es un servicio de almacenamiento de objetos capaz de guardar cantidades ilimitadas de datos. Los archivos se guardan como objetos, accesibles mediante una URL que los identifica. Aunque un objeto individual no puede ser mayor de 5 Terabytes, puedes tener un número infinito de objetos.
+
+S3 se puede utilizar para almacenar contenido multimedia, backups, o datos para cálculos y analíticas. S3 se puede incluso utilizar para almacenar sitios web estáticos. Para esto último, en la configuración del almacén de las páginas escogemos "alojamiento web" y damos permisos que permitan acceder a todo el mundo a los ficheros. Entonce se podrá acceder a la web estática sin necesidad de un servidor web, bien directamente a través de S3 o bien a través de la CDN CloudFront asociada al almacén S3.
+
+Guardamos objetos en almacenes llamados "buckets" ("cubos") que hemos declarado previamente. Cada bucket debe tener un nombre único para todo AWS, independientemente de la región donde esté. ¡Atención! : esto quiere decir que dos usuarios de AWS no pueden poner el mismo nombre a un bucket.
+
+Cada objeto tiene una clave, que es el nombre asignado a dicho objeto. Usamos la clave para recuperar el objeto.
+
+El valor de un objeto es la información que hemos almacenado, y puede ser cualquier secuencia de bytes. No sé puede modificar el valor de un objeto, sino que tenemos que realizar los cambios en local y volver a subir el objeto a S3.
+
+Además de la clave, los objetos también tienen asociados metadatos, que son pares nombre-valor que guardan información vinculada al objeto.
+
+Los objetos tienen una URL para acceder a ellos globalmente, con el formato:
+
+    https://s3-<aws-region>.amazonaws.com/<bucket-name>/<object-key>
+
+El almacenamiento de objetos no es jerárquico, como el almacenamiento de ficheros. En el almacenamiento de ficheros podemos organizar carpetas dentro de otras carpetas, pero en el almacenamiento de objetos no podemos tener buckets dentro de otros buckets. Sin embargo, para aparentar en algunos casos subdirectorios, el nombre de un objeto puede contener caracteres "/" para simular "una ruta" . Por ejemplo, en la región "us-east-1" y el bucket "fotos" puedo dar de nombre a un objeto "vacaciones/2025/paris.jpeg" , y entonces su ruta sería:
+
+    https://s3-us-east-1.amazonaws.com/fotos/vacaciones/2025/paris.jpeg
+
+
+
+### Características del almacenamiento de objetos
+
+Si hemos activado la característica de versionado en un bucket, los objetos que se almacenan también tienen un número de versión. Dentro de un bucket, un objeto queda identificado por su clave y por su número de versión.
+
+El versionado protege los objetos de sobre-escrituras y borrados accidentales. Cada vez que se sube un mismo objeto, éste obtiene un nuevo número de versión. Con control de versiones activado, cuando solicitamos un objeto obtenemos la última versión de dicho objeto. Para obtener una versión específica debemos incluir la versión en la petición. Con control de versiones activado, cuando borramos un objeto se le añade una marca de borrado. Para poder borrarlo definitivamente debemos acompañar la petición con la versión que queremos borrar.
+
+La durabilidad describe el promedio de perdidas de objetos esperadas a lo largo del año. En S3 la durabilidad es de 11 nueves, que quiere decir que hay un 0.000000001 por ciento de posibilidad de perder un objeto. Por ejemplo, si guardamos diez mil objetos en Amazon S3 podemos esperar perder un objeto cada diez millones de años. Amazon S3 guarda redundantemente nuestros objetos en múltiples dispositivos en múltiples lugares en la región de tu elección. Si un dispositivo falla, Amazon lo detecta y repara la redundancia. Además Amazon S3 verifica regularmente la integridad de los datos utilizando sumas de comprobación. Por último S3 permite replicación de datos entre regiones.
+
+La disponibilidad se refiere a la habilidad de acceder rápidamente a los datos cuando lo necesitemos. Amazon S3 proporciona 4 nueves (o 99.99%) de disponibilidad. También proporciona capacidad ilimitada para guardar datos.
+
+La seguridad viene proporcionada por múltiples maneras de controlar el acceso a los nuestros datos, como permisos en los buckets y en los objetos, y cifrado de los datos. Por defecto, todos los buckets S3 son privados, y solo los usuarios a los que se permite explícitamente acceso pueden leer o guardar datos. Por defecto, todos los buckets S3 están encriptados.
+
+Otra característica del almacenamiento S3 es el alto rendimiento: nuestras aplicaciones pueden conseguir miles de transacciones por segundo guardando o recuperando datos de S3, que automáticamente escala a los más altos ratios de peticiones por segundo.
+
+Algunas características extra del almacenamiento S3 son:
+  - subidas multi-parte para subir en paralelo y en caso de error solo resubir una parte;
+  - transferencias aceleradas a través de los puntos de presencia de CloudFront;
+  - Transfer Family permite subir y bajar datos de S3 y EFS mediante SFTP, FTPS y AS2.
+
+
+
+### Modalidades del almacenamiento de objetos
+
+Lo que pagamos por almacenar objetos en buckets depende del tamaño de los objetos, del tiempo que los guardamos, pero también de la modalidad de almacenamiento que escogemos.
+
+Amazon S3 ofrece diferentes de clases de almacenamiento diseñadas para distintos casos de uso:
+
+  * S3 Standard está diseñado con el fin de proporcionar almacenamiento de objetos de alta durabilidad, alta disponibilidad y alto rendimiento para los datos a los que se accede con frecuencia. Debido a que ofrece baja latencia y alto rendimiento, Amazon S3 Standard es adecuado para una amplia variedad de casos prácticos, como las aplicaciones en la nube, los sitios web dinámicos, la distribución de contenido, las aplicaciones para dispositivos móviles y videojuegos y el análisis de big data. Proporciona durabilidad replicando a través de tres zonas de disponibilidad.
+
+  * S3 Standard-IA (Infrequent Access) ofrece los beneficios de Amazon S3 Standard, pero utiliza unos costos diferentes que lo hace más adecuado para almacenar datos accedidos con poca frecuencia pero que todavía necesitan un acceso rápido, como por ejemplo logs o fotos antiguas. A los datos guardados aquí se les aplica una tarifa de 30 días como mínimo, y aunque cueste menos dinero almacenar los datos que en S3 Standard, cuesta más dinero recuperarlos.
+
+  * S3 One Zone-IA guarda los datos en una única zona de disponibilidad, en lugar de tres. Es una opción más barata que la anterior, y va bien para guardar datos que si se pierden se pueden recuperar, como copias de seguridad de datos de nuestras instalaciones. También se puede utilizar como opción barata para replicar datos de otra región AWS.
+
+  * S3 Glacier Instant Retrieval es la mejor opción para datos que se deben guardar largo tiempo, acceder pocas veces, pero que cuando se debe acceder ha de estar disponible en milisegundos. Por ejemplo, imágenes médicas, noticias antiguas.
+
+  * S3 Glacier Flexible Retrieval es para datos que se acceden un par de veces al año, y podemos esperar minutos o horas para su acceso, como por ejemplo backups, almacenamiento de datos para futuros usos.
+
+  * S3 Glacier Deep Archive es la clase de almacenamiento más barata en S3. Está pensado para datos que se deben guardar un plazo de tiempo muy largo, pero acceder casi nunca. Es útil para las industrias como servicios financieros y sanidad que por regulación deben mantener datos una decena de años antes de borrarlos.
+  
+  * S3 Intelligent-Tiering es un almacenamiento especial que se encarga de reducir los costos migrando automáticamente los datos a la clase de almacenamiento más rentable, sin que esto perjudique el rendimiento. Para ello S3 supervisa los patrones de acceso de los objetos de Amazon S3 Intelligent-Tiering y desplaza a la capa de acceso poco frecuente los objetos a los que no se ha accedido durante 30 días consecutivos. Si se accede a un objeto en la capa de acceso poco frecuente, este se desplaza automáticamente a la capa de acceso frecuente.
+
+A un grupo de objetos de S3 se le puede configurar un "ciclo de vida", que es un conjunto de reglas que definen la transición automática de un objeto a otra clase de almacenamiento, o el borrado automático de los objetos, tras un cierto periodo de tiempo.
 
 
 
@@ -566,11 +641,19 @@ Por favor, lee: [Simple Storage Service (S3)](https://docs.aws.amazon.com/Amazon
 
 Por favor, lee: [Elastic Block Store (EBS)](https://docs.aws.amazon.com/ebs/latest/userguide/)
 
+Amazon EBS es un almacenamiento de bloques que se puede montar como dispositivo de una instancia de Amazon EC2 en la misma zona de disponibilidad. Hablando claro, EBS son discos duros para instancias de máquinas virtuales EC2 y deben estar en la misma zona de disponibilidad para que la latencia sea mínima.
+
+Los discos duros EBS pueden estar cifrados, y también se les puede cambiar el tamaño y la tecnología, por ejemplo de HDD a SSD.
+
+Normalmente en EBS se paga por capacidad y por uso.
+
 
 
 ### Almacenamiento en servidor de ficheros ([NFS](https://es.wikipedia.org/wiki/Network_File_System) para instancias EC2)
 
 Por favor, lee: [Elastic File System (EFS)](https://docs.aws.amazon.com/efs/latest/ug/)
+
+Amazon EFS es un sistema de archivos compartidos que múltiples instancias de Amazon EC2 pueden montar simultáneamente.
 
 
 ---
