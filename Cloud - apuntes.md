@@ -458,6 +458,8 @@ Amazon EC2 proporciona máquinas virtuales en la nube. Es una forma de infraestr
 
 Los pasos en el lanzamiento de una instancia son:
 
+![](Cloud.mv1.png)
+
  1. Seleccionar una imagen de máquina de Amazon (AMI):
     - AMI de inicio rápido (plantillas de Linux y Windows que proporciona AWS).
     - Mis AMI (cualquier plantilla que hayas creado y guardado).
@@ -479,13 +481,13 @@ Los pasos en el lanzamiento de una instancia son:
     
     El nombre de instancia indica la familia, la generación, y tamaño. Por ejemplo, una imagen llamada t3.large es una instancia de propósito general (familia T), con hardware de tercera generación (3), con 2 cpu y 8 Gb de RAM (Large). 
 
- 3. Especificar la configuración de red: en qué región, VPC y subred colocaremos la instancia.
+ 3. Identificar o crear el par de claves pública-privada para acceder a la máquina vía SSH. La privada se ha de descargar y guardar en un lugar seguro. Si la clave se pierde no hay manera de recuperarla después, en la ventana de propiedades de la máquina virtual.
 
- 4. Especificar almacenamiento, para especificar en qué volumen está la carpeta raíz, cuál es el espacio de disco y la tecnología del disco, si añadimos discos adicionales, o si el volumen está cifrado.
+ 4. Especificar la configuración de red: en qué región, VPC y subred colocaremos la instancia.
 
- 5. Identificar o crear el par de claves pública-privada para acceder a la máquina vía SSH. La privada se ha de descargar y guardar en un lugar seguro. Si la clave se pierde no hay manera de recuperarla después, en la ventana de propiedades de la máquina virtual.
+ 5. Configuración del grupo de seguridad, que es el cortafuegos personal de la máquina virtual.
 
- 6. Configuración del grupo de seguridad, que es el cortafuegos personal de la máquina virtual.
+ 6. Especificar almacenamiento, para especificar en qué volumen está la carpeta raíz, cuál es el espacio de disco y la tecnología del disco, si añadimos discos adicionales, o si el volumen está cifrado.
 
  7. Adjuntar rol de IAM, en caso que la instancia EC2 deba acceder a algún recurso, para que disponga de los permisos necesarios.
 
@@ -629,7 +631,7 @@ Amazon S3 ofrece diferentes de clases de almacenamiento diseñadas para distinto
 
   * S3 Glacier Flexible Retrieval es para datos que se acceden un par de veces al año, y podemos esperar minutos o horas para su acceso, como por ejemplo backups, almacenamiento de datos para futuros usos.
 
-  * S3 Glacier Deep Archive es la clase de almacenamiento más barata en S3. Está pensado para datos que se deben guardar un plazo de tiempo muy largo, pero acceder casi nunca. Es útil para las industrias como servicios financieros y sanidad que por regulación deben mantener datos una decena de años antes de borrarlos.
+  * S3 Glacier Deep Archive es la clase de almacenamiento más barata en S3. Está pensado para datos que se deben guardar un plazo de tiempo muy largo, pero acceder casi nunca, y podemos esperar hasta doce horas para su acceso. Es útil para las industrias como servicios financieros y sanidad que por regulación deben mantener datos una decena de años antes de borrarlos.
   
   * S3 Intelligent-Tiering es un almacenamiento especial que se encarga de reducir los costos migrando automáticamente los datos a la clase de almacenamiento más rentable, sin que esto perjudique el rendimiento. Para ello S3 supervisa los patrones de acceso de los objetos de Amazon S3 Intelligent-Tiering y desplaza a la capa de acceso poco frecuente los objetos a los que no se ha accedido durante 30 días consecutivos. Si se accede a un objeto en la capa de acceso poco frecuente, este se desplaza automáticamente a la capa de acceso frecuente.
 
@@ -641,9 +643,11 @@ A un grupo de objetos de S3 se le puede configurar un "ciclo de vida", que es un
 
 Por favor, lee: [Elastic Block Store (EBS)](https://docs.aws.amazon.com/ebs/latest/userguide/)
 
-Amazon EBS es un almacenamiento de bloques que se puede montar como dispositivo de una instancia de Amazon EC2 en la misma zona de disponibilidad. Hablando claro, EBS son discos duros para instancias de máquinas virtuales EC2 y deben estar en la misma zona de disponibilidad para que la latencia sea mínima.
+Amazon EBS es un almacenamiento de bloques persistente que se puede montar como dispositivo de una instancia de Amazon EC2 en la misma zona de disponibilidad. Hablando claro, EBS son discos duros para almacenar datos de las instancias de máquinas virtuales EC2 y deben estar en la misma zona de disponibilidad para que la latencia sea mínima.
 
-Los discos duros EBS pueden estar cifrados, y también se les puede cambiar el tamaño y la tecnología, por ejemplo de HDD a SSD.
+Además de EBS, para las instancias EC2 también tenemos discos duros de "almacenamiento de instancia", pero estos últimos disponen de menos características que EBS y no sobreviven cuando decidimos terminar y borrar la instancia. El "almacenamiento de instancia" va bien como volumen raiz para el sistema operativo y para datos temporales.
+
+Los discos duros EBS están asociados a una la instancia pero son independientes de ella y sobreviven si la instancia se borra. Los discos duros EBS pueden estar cifrados, y también se les puede cambiar el tamaño y la tecnología, por ejemplo de HDD a SSD.
 
 Normalmente en EBS se paga por capacidad y por uso.
 
@@ -653,7 +657,11 @@ Normalmente en EBS se paga por capacidad y por uso.
 
 Por favor, lee: [Elastic File System (EFS)](https://docs.aws.amazon.com/efs/latest/ug/)
 
-Amazon EFS es un sistema de archivos compartidos que múltiples instancias de Amazon EC2 pueden montar simultáneamente.
+Amazon EFS es un sistema de archivos compartidos que múltiples instancias de Amazon EC2 pueden montar simultáneamente. Ideal cuando tenemos autoescalado y varias instancias similares EC2 deben compartir los datos.
+
+EFS se utiliza como almacenamiento compartido de instancias Linux. Para instancias Windows Server tenemos a FSx como almacenamiento compartido.
+
+![](Cloud.efs1.png)
 
 
 ---
