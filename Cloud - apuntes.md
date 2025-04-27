@@ -639,7 +639,7 @@ A un grupo de objetos de S3 se le puede configurar un "ciclo de vida", que es un
 
 
 
-### Almacenamiento de bloques (discos duros para instancias EC2)
+### Almacenamiento de bloques (discos duros para máquinas virtuales)
 
 Por favor, lee: [Elastic Block Store (EBS)](https://docs.aws.amazon.com/ebs/latest/userguide/)
 
@@ -653,7 +653,7 @@ Normalmente en EBS se paga por capacidad y por uso.
 
 
 
-### Almacenamiento en servidor de ficheros ([NFS](https://es.wikipedia.org/wiki/Network_File_System) para instancias EC2)
+### Almacenamiento en servidor de ficheros ([NFS](https://es.wikipedia.org/wiki/Network_File_System) para máquinas virtuales)
 
 Por favor, lee: [Elastic File System (EFS)](https://docs.aws.amazon.com/efs/latest/ug/)
 
@@ -670,15 +670,60 @@ EFS se utiliza como almacenamiento compartido de instancias Linux. Para instanci
 BASES DE DATOS
 --------------
 
+Comienzo recordando la diferencia entre bases de datos relacionales y no-relacionales:
+
+Una base de datos relacional trabaja con datos estructurados que se organizan mediante tablas, registros y columnas, con relaciones bien definidas entre las tablas de la base de datos; y utiliza un lenguaje de consulta estructurada llamado SQL.
+
+Una base de datos no-relacional es "todo lo demás": bases de datos de clave-valor, de grafo, de arbol, etc. y pueden funcionar con datos no estructurados y semiestructurados.
+
+Por favor, lee: [Información general de los servicios de bases de datos de Amazon](https://docs.aws.amazon.com/whitepapers/latest/aws-overview/database.html)
+
+
+
 ### Bases de datos relacionales
 
 Por favor, lee: [Relational Database Services (RDS)](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/)
+
+Amazon RDS es un servicio administrado que configura y opera una base de datos relacional en la nube. Al ser un servicio administrado por AWS, con RDS te puedes centrar en la optimización de las consultas de BBDD, porque ya no has de gestionar:
+
+  * El mantenimiento del servidor y consumo energético
+  * La instalación del sistema operativo y su actualización
+  * La instalación del servidor de BBDD y su actualización
+  * Las copias de seguridad de la base de datos
+  * La alta disponibilidad de la base de datos
+  * La escalabilidad
+
+Una instancia de base de datos es un entorno de base de datos aislado que puede contener varias bases de datos creadas por el usuario. Seleccionaremos el hardware (cpu, memoria y rendimiento de red), el almacenamiento (HDD , SDD o IOPS) y el motor (MySQL, MariaDB, PostgreSQL, Microsoft SQL Server, Oracle, Aurora o Redshift).
+
+![](Cloud.rds1.png)
+
+Como muchas bases de datos son migradas de nuestras premisas a la nube, normalmente escogemos el mismo motor que teníamos en premisas para la base de datos, para facilitar la transición. Sin embargo Amazon ha desarrollado un nuevo motor, [Aurora](https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/), que es un motor basado en MySQL y PostgreSQL pero optimizado para el cloud. Facilita la migración des de MySQL y PostgreSQL pero da mayor rendimiento, gran fiabilidad y escalabilidad, a un costo bajo.
+
+Amazon también ha desarrollado otro motor, [Redshift](https://docs.aws.amazon.com/redshift/latest/gsg/), para grandes bases de datos que optimiza y facilita todo tipo de analíticas. Es ideal para "Big Data" y "Bussiness Inteligence".
+
+RDS se puede ejecutar fuera de una VPC, pero también dentro, normalmente en la subred privada para aislar el servidor de BBDD de internet.
+
+![](Cloud.rds2.png)
+
+Una función de Amazon RDS es "despliegues Multi-AZ", que consiste en la posibilidad de configurar para alta disponibilidad la instancia de base de datos replicando dicha instancia en otra zona de disponibilidad de la misma VPC, y manteniendo la réplica en espera por si la instancia primaria cae. Se trata de la típica replicación maestro-esclavo en que la copia va recibiendo las mismas transacciones que la instancia original. Si cae la primaria, será AWS el que ponga en línea automáticamente la instancia de base de datos que estaba en espera como nueva instancia principal.
+
+![](Cloud.rds3.png)
+
+De forma similar, AWS puede utilizar la replicación maestro-esclavo en los motores MySQL, MariaDB, PostgreSQL y Amazon Aurora, pero manteniendo la réplica en línea para que resuelva parte de las consultas de lectura. Por ejemplo, podemos tener una instancia primaria que reciba las operaciones SQL de modificación, y varias réplicas de lectura a las que se reenvían las operaciones SQL de consulta.
+
+![](Cloud.rds4.png)
+
+Los costos de la base de datos dependerán de tiempo de uso, tamaño de los datos, número de solicitudes, datos de salida, hardware escogido para la instancia y para el almacenamiento, y tipo de motor. Como en EC2, también varía el precio si la ejecución de la instancia es bajo demanda o mediante reserva.
 
 
 
 ### Bases de datos no relacionales (NOSQL)
 
 Por favor, lee: [DynamoDB](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/)
+
+Amazon DynamoDB es un servicio de base de datos NoSQL ágil y flexible para todas las aplicaciones que necesiten una latencia constante de milisegundos a cualquier escala.
+
+No voy a explicar como funciona internamente DynamoDB , o las claves de particionado y ordenación en NoSQL, por que se escapa del objetivo de este resumen.
 
 
 ---
