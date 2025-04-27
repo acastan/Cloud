@@ -295,7 +295,7 @@ Design principles for security pillar
   
     Automated software-based security mechanisms improve your ability to securely scale more rapidly and cost-effectively. Create secure architectures, which includes implementing controls that are defined and managed as code in version-controlled templates.
 
-Con las políticas de IAM, puede permitir o denegar el acceso a servicios de AWS (como Amazon S3), recursos individuales de AWS (como un bucket de S3 específico) o acciones individuales de API (como s3:CreateBucket). Una política de IAM solo puede aplicarse a usuarios, grupos, o roles de IAM, y no podrá restringir al administrador de AWS.
+Con las políticas de IAM, puedes permitir o denegar el acceso a servicios de AWS (como Amazon S3), recursos individuales de AWS (como un bucket de S3 específico) o acciones individuales de API (como s3:CreateBucket). Una política de IAM solo puede aplicarse a usuarios, grupos, o roles de IAM, y no podrá restringir al administrador de AWS.
 
 [Simulador de políticas IAM](https://policysim.aws.amazon.com/)
 
@@ -310,7 +310,13 @@ Pero además, con AWS Organizations, se pueden utilizar políticas de control de
 REDES
 -----
 
-En este punto comentaré las herramientas de Cloud que tiene que ver con redes: creación de redes virtuales para disponer en ellas máquinas virtuales y bases de datos; servicio de DNS; y puntos de presencia ("COntent Delivery Netwoks"). Los nombres corresponden a los que reciben en AWS.
+En este punto comentaré las herramientas de Cloud que tiene que ver con redes:
+
+  * Creación de redes virtuales para disponer en ellas máquinas virtuales y bases de datos;
+  
+  * Servicio de DNS; y 
+  
+  * Puntos de presencia ("COntent Delivery Netwoks").
 
 
 
@@ -693,15 +699,15 @@ Amazon RDS es un servicio administrado que configura y opera una base de datos r
   * La alta disponibilidad de la base de datos
   * La escalabilidad
 
-Una instancia de base de datos es un entorno de base de datos aislado que puede contener varias bases de datos creadas por el usuario. Seleccionaremos el hardware (cpu, memoria y rendimiento de red), el almacenamiento (HDD , SDD o IOPS) y el motor (MySQL, MariaDB, PostgreSQL, Microsoft SQL Server, Oracle, Aurora o Redshift).
+Una instancia de base de datos es un entorno de base de datos aislado que puede contener varias bases de datos creadas por el usuario. Seleccionaremos el hardware (cpu, memoria y rendimiento de red), el almacenamiento (HDD , SDD o IOPS) y el motor (MySQL, MariaDB, PostgreSQL, Microsoft SQL Server, Oracle, Aurora o IBM Db2).
 
 ![](Cloud.rds1.png)
 
 Como muchas bases de datos son migradas de nuestras premisas a la nube, normalmente escogemos el mismo motor que teníamos en premisas para la base de datos, para facilitar la transición. Sin embargo Amazon ha desarrollado un nuevo motor, [Aurora](https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/), que es un motor basado en MySQL y PostgreSQL pero optimizado para el cloud. Facilita la migración des de MySQL y PostgreSQL pero da mayor rendimiento, gran fiabilidad y escalabilidad, a un costo bajo.
 
-Amazon también ha desarrollado otro motor, [Redshift](https://docs.aws.amazon.com/redshift/latest/gsg/), para grandes bases de datos que optimiza y facilita todo tipo de analíticas. Es ideal para "Big Data" y "Bussiness Inteligence".
+Amazon también ha desarrollado otra tecnologia de BBDD relacional, [Redshift](https://docs.aws.amazon.com/redshift/latest/gsg/), específica para grandes bases de datos, que optimiza y facilita todo tipo de analíticas. Es ideal para "Big Data" y "Bussiness Inteligence".
 
-RDS se puede ejecutar fuera de una VPC, pero también dentro, normalmente en la subred privada para aislar el servidor de BBDD de internet.
+RDS se puede ejecutar fuera de una VPC, pero también dentro, normalmente en la subred privada para aislar el servidor de BBDD de internet. También lo podemos proteger con permisos (IAM), cortafuegos personal (Security Groups), tráfico de red cifrado (TLS/SSL), y encriptando los datos almacenados (AWS KMS).
 
 ![](Cloud.rds2.png)
 
@@ -721,7 +727,7 @@ Los costos de la base de datos dependerán de tiempo de uso, tamaño de los dato
 
 Por favor, lee: [DynamoDB](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/)
 
-Amazon DynamoDB es un servicio de base de datos NoSQL ágil y flexible para todas las aplicaciones que necesiten una latencia constante de milisegundos a cualquier escala.
+Amazon DynamoDB es un servicio de base de datos NoSQL clave-valor, ágil y flexible para todas las aplicaciones que necesiten una latencia constante de milisegundos a cualquier escala.
 
 No voy a explicar como funciona internamente DynamoDB , o las claves de particionado y ordenación en NoSQL, por que se escapa del objetivo de este resumen.
 
