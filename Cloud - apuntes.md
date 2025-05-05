@@ -1,8 +1,7 @@
 RESUMEN DE CLOUD COMPUTING Y AWS
 ================================
 
-Este es mi resumen sobre cloud computing y AWS.
-
+Este es mi resumen sobre cloud computing y AWS. Intento que esta introducción a cloud sea independiente del proveedor de cloud: Amazon AWS, Microsoft Azure, Oracle Cloud, Google Cloud. Los conceptos de cloud que tocaré son comunes a todos los proveedores, sin embargo los ejemplos concretos serán con AWS, y los temas seguirán el orden del curso AWS Cloud Foundations, que es: 
 
 Tabla de contenido:
 
@@ -49,7 +48,7 @@ En esta introducción los temas que tocaremos serán:
 
   * Escalado y supervisión automáticos: Explorar conceptos clave relacionados con Elastic Load Balancing (ELB), Amazon CloudWatch y Auto Scaling.
 
-Documentación: <https://docs.aws.amazon.com/>
+La documentación sobre cualquier punto de la introducción está en <https://docs.aws.amazon.com/>
 
 
 ---
@@ -58,13 +57,17 @@ Documentación: <https://docs.aws.amazon.com/>
 CONCEPTOS DE LA NUBE
 --------------------
 
-Cloud Computing es la entrega instantánea bajo demanda de potencia de cómputo, bases de datos, almacenamiento, aplicaciones y otros recursos de TI a través de Internet con un sistema de precios de pago por uso. Estos recursos se ejecutan en equipos de servidores ubicados en grandes centros de datos en diferentes partes del mundo.
+Cloud Computing es la entrega instantánea bajo demanda de potencia de cómputo, bases de datos, almacenamiento, aplicaciones y otros recursos de TI a través de Internet, con un sistema de precios de pago por uso. Estos recursos se ejecutan en equipos de servidores ubicados en grandes centros de datos en diferentes partes del mundo.
 
-IaaS: te ofrece instancias de cómputo, donde tu instalaras y administrarás el sistema operativo. Un ejemplo de Iaas es contratar máquinas virtuales en la nube. El proveedor se responsabiliza del hardware y tu del sistema operativo, aplicaciones y datos.
+Si clasificamos los servicios en la nube por responsabilidad del proveedor y del usuario, obtenemos tres conceptos que es importante memorizar:
 
-PaaS: te ofrece un sistema sobre el cual tu instalas tus aplicaciones. Un ejemplo de PaaS es contratar hosting web. El proveedor se responsabiliza del hardware y del s.o., y tu de las aplicaciones y datos.
+  * Infraestructura como Servicio (IaaS): te ofrece instancias de cómputo, donde tu instalaras y administrarás el sistema operativo. Un ejemplo de Iaas es contratar máquinas virtuales en la nube. El proveedor se responsabiliza del hardware y tu del sistema operativo, aplicaciones y datos.
 
-SaaS: te ofrece una aplicación. Un ejemplo de SaaS es GMail. El proveedor se responsabiliza del hardware, del s.o. y de la aplicación, y tu de los datos.
+  * Plataforma como Servicio (PaaS): te ofrece un sistema sobre el cual tu instalas tus aplicaciones. Un ejemplo de PaaS es contratar hosting web. El proveedor se responsabiliza del hardware y del sistema operativo, y tu de las aplicaciones y datos.
+
+  * Software como Servicio (SaaS): te ofrece una aplicación. Un ejemplo de SaaS es GMail. El proveedor se responsabiliza del hardware, del sistema operativo y de la aplicación, y tu de los datos.
+
+![](Cloud.responsabilidad.png)
 
 Aquí tienes los [nombres de los servicios en cada Cloud](https://comparecloud.in/) y aquí otra [comparación de los servicios en cada Cloud](https://cloudcomparisontool.com/).
 
@@ -89,13 +92,13 @@ Y aquí tienes los [servicios de AWS clasificados](https://docs.aws.amazon.com/w
   * Amazon SNS (Simple Notification Service)
   * Amazon SQS (Simple Queue Service)
 
-Para interaccionr con la nube podemos usar la consola Web, CLI, SDK, API, e IaaC.
+Para interaccionar con la nube podemos usar diferentes medios, como el panel web, la línea de comandos (CLI), librerías para aplicaciones (SDK), llamadas a la API REST de bajo nivel, e Infraescructura como Código (IaC).
 
 
 
-### Interaccionar con la cónsola
+### Interaccionar con el panel web
 
-Por ejemplo, acceder a las instancias de AWS tienes la URL <https://console.aws.amazon.com/ec2/#Instances>
+Por ejemplo, para acceder a las instancias de AWS tienes la URL <https://console.aws.amazon.com/ec2/#Instances>
 
 
 
@@ -105,7 +108,7 @@ Debes instalar una línea de comandos especial que permite ejecutar instruccione
 
     $ aws <servicio> <comando> [parámetros]
 
-Por ejemplo:
+Por ejemplo, para lanzar una instancia, después listar las instancias, y por último terminar la instancia:
 
 ```
 $ export AWS_ACCESS_KEY_ID=XXXXXXXXX
@@ -117,7 +120,7 @@ $ aws ec2 describe-instances
 $ aws ec2 terminate-instances --instance-id i-xxxxxxxxxxxxxxxxx
 ```
 
-En el caso de AWS encuentras una [introducción](https://docs.aws.amazon.com/cli/latest/userguide/) y una [referencia](https://awscli.amazonaws.com/v2/documentation/api/latest/reference/) en <https://docs.aws.amazon.com/cli/>
+En el caso de AWS encuentras una [introducción](https://docs.aws.amazon.com/cli/latest/userguide/) y una [referencia](https://awscli.amazonaws.com/v2/documentation/api/latest/reference/index.html) en <https://docs.aws.amazon.com/cli/>
 
 
 
@@ -125,7 +128,7 @@ En el caso de AWS encuentras una [introducción](https://docs.aws.amazon.com/cli
 
 Las diferentes tecnologías de Cloud ofrecen librerías para que nuestros programas puedan acceder a los servicios que ofrecen. Dichas librerías están disponibles para los lenguajes de programación más populares: Java, Python, Ruby, Go, .Net, etc.
 
-Por ejemplo:
+Por ejemplo, este programa utiliza las librerías [Boto3](https://aws.amazon.com/sdk-for-python/) para crear una clase Python que lanza instancias de cómputo EC2:
 
 ```
 class EC2InstanceWrapper:
@@ -177,9 +180,11 @@ Todas las tecnologías de Cloud ofrecen una API REST, de más bajo nivel que su 
 
 ### Interaccionar con IaC
 
-IaC is an approach to provision and manage resources such as cloud infrastructure. It allows you to define and deploy your resources using human-readable definition files or code. IaC allows a declarative specification of the desired infrastructure state. This means compute instances, storage, networking, security groups, and other cloud services.
+Infraestructura como Código (IaC) permite aprovisionar y manejar recursos de manera declarativa, utilizando ficheros donde definimos de manera comprensiva el despliegue de recursos que deseamos: instancias de cálculo, almacenamiento, red, grupos de seguridad, y otros servicios cloud.
 
-**Ejemplo con AWS CloudFormation**
+Todos los proveedores de cloud tiene sus propias herramientas de IaC, como por ejemplo AWS CloudFormation, Azure Resource Manager, Google Cloud Deployment Manager, etc. Sin embargo, también existen herramientas IaC independientes de la plataforma, como Terraform y su alternativa de código abierto OpenTofu.
+
+Ejemplo con [AWS CloudFormation](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/Welcome.html), que inicia una instancia de cálculo:
 
 ```
 Resources:
@@ -190,12 +195,10 @@ Resources:
       InstanceType: "t2.micro"
 ```
 
-<https://us-east-1.console.aws.amazon.com/cloudformation> -> Create stack -> Upload a template file -> choose your previously created "ec2.yml" -> Next -> Give the stack a name -> Skip through all the options and deploy the stack -> status CREATE_COMPLETE
+https://us-east-1.console.aws.amazon.com/cloudformation -> Create stack -> Upload a template file -> choose your previously created "ec2.yml" -> Next -> Give the stack a name -> Skip through all the options and deploy the stack -> status CREATE_COMPLETE
 
 
-**Ejemplo con Terraform**
-
-<https://developer.hashicorp.com/terraform/tutorials/aws-get-started/install-cli>
+Ejemplo multiplataforma con [Terraform](https://developer.hashicorp.com/terraform/tutorials/aws-get-started/install-cli)/[OpenTofu](https://search.opentofu.org/provider/opentofu/aws/latest), que inicia una instancia de cálculo:
 
 
 ```
@@ -225,9 +228,9 @@ Por favor, lee: <https://docs.aws.amazon.com/whitepapers/latest/how-aws-pricing-
 
 Se cobra por cómputo (por hora, y en Linux por segundo), por almacenamiento (por Gb), y por tráfico de salida (por Gb):
 
-La [calculadora de precios](https://calculator.aws/#/) permite hacer estimaciones de cuánto te costará un producto.
+La [calculadora de precios de AWS](https://calculator.aws/#/) permite hacer estimaciones de cuánto te costará un producto.
 
-El panel de facturación de AWS te permite ver el estado de tus gastos de AWS del mes hasta la fecha, e identificar los servicios que forman parte de dichos gastos.
+El [panel de facturación de AWS](https://console.aws.amazon.com/billing/home#/bills) te permite ver el estado de tus gastos de AWS del mes hasta la fecha, e identificar los servicios que forman parte de dichos gastos.
 
 He aquí precios para los servicios más comunes:
 
@@ -254,7 +257,7 @@ Cada región está formada por tres o más zonas de disponibilidad, que son luga
 
 Cada zona de disponibilidad está formada por uno o varios datacenters, y están conectadas con el resto de zonas de disponibilidad de su región con enlaces de fibra de baja latencia. 
 
-Además de las regiones, AWS también tiene los llamados puntos de presencia, que son una especie de cachés de contenido o proveedores de contenido.
+Además de las regiones, AWS también tiene repartidos por todo el mundo los llamados "puntos de presencia", que son una especie de cachés de contenido o proveedores de contenido.
 
 Imagina, por ejemplo, que España sea una región AWS, y que disponga de datacenters en tres zonas de disponibilidad cerca de las regiones con más empresas: Barcelona, Madrid y Valencia. Pero que además disponga puntos de presencia cerca de otras ciudades importantes del estado, para acercar el contenido a los clientes y disminuir así la latencia.
 
@@ -265,7 +268,7 @@ Imagina, por ejemplo, que España sea una región AWS, y que disponga de datacen
 SEGURIDAD
 ---------
 
-Design principles for security pillar
+Principios de diseño en la nube para la seguridad:
 
   * Implement a strong identity foundation (IAM , autentificación y autorización):
 
@@ -297,9 +300,9 @@ Design principles for security pillar
 
 Con las políticas de IAM, puedes permitir o denegar el acceso a servicios de AWS (como Amazon S3), recursos individuales de AWS (como un bucket de S3 específico) o acciones individuales de API (como s3:CreateBucket). Una política de IAM solo puede aplicarse a usuarios, grupos, o roles de IAM, y no podrá restringir al administrador de AWS.
 
-[Simulador de políticas IAM](https://policysim.aws.amazon.com/)
+El [simulador de políticas IAM](https://policysim.aws.amazon.com/) permite probar las políticas.
 
-AWS Organizations es una especie de Directorio, con la raíz, las Unidades Organizativas (OU), y las cuentas. Permite aplicar políticas a las OU y a las cuentas. También permite agrupar cuentas y aplicar políticas a dichos grupos. Además, también permite facturación unificada.
+[AWS Organizations](https://docs.aws.amazon.com/organizations/latest/userguide/orgs_introduction.html) es una especie de Directorio, con la raíz, las Unidades Organizativas (OU), y las cuentas. Permite aplicar políticas a las OU y a las cuentas. También permite agrupar cuentas y aplicar políticas a dichos grupos. Además, también permite facturación unificada.
 
 Pero además, con AWS Organizations, se pueden utilizar políticas de control de servicios (SCP) para establecer unos permisos máximos para los usuarios de la organización.
 
@@ -345,7 +348,7 @@ Una manera de hacer accesibles des del exterior las instancias de cómputo EC2 (
 
 Una manera de hacer que una instancia tenga una IP pública estática que no cambie, es asignarle una IP elástica. La IP elástica se puede reasignar a otra instancia o a un balanceador de carga.
 
-Los recursos que no queremos que sean accesibles des de Internet los podemos colocar en una subred privada. En la subred privada sólo tendrán IP privada, y tampoco los recursos podrán acceer a Internet a menos que asociemos dicha subred a un NAT Gateway e incorporemos una regla a la tabla de enrutamimiento de la subred.
+Los recursos que no queremos que sean accesibles des de Internet los podemos colocar en una subred privada. En la subred privada sólo tendrán IP privada, y tampoco los recursos podrán acceer a Internet a menos que asociemos dicha subred a un NAT Gateway e incorporemos una regla a la tabla de enrutamiento de la subred.
 
 En las VPC tenemos dos tipos de cortafuegos: cortafuegos de red ("Acces Control Lists") que protegen una subred, y cortafuegos personales ("Security Groups") que protegen una instancia de cómputo EC2.
 
@@ -367,7 +370,7 @@ Los Access Control List:
 
 Existe un servicio más avanzado de cortafuegos de red, de pago, que también detecta y previene intrusiones, llamado [AWS Network Firewall](https://docs.aws.amazon.com/network-firewall/latest/developerguide/what-is-aws-network-firewall.html).
 
-¿Cómo implementaría un montaje como éste, con un servidor web en una subred pública y otro servidor web en una subred privada?
+Ejemplo: ¿Cómo implementaría un montaje como éste, con un servidor web en una subred pública y otro servidor web en una subred privada?
 
 ![](Cloud.red1.png)
 
@@ -470,7 +473,7 @@ Los pasos en el lanzamiento de una instancia son:
     - AMI de inicio rápido (plantillas de Linux y Windows que proporciona AWS).
     - Mis AMI (cualquier plantilla que hayas creado y guardado).
     - AWS Marketplace (plantillas vendidas por terceros y comprobadas por AWS).
-    - AMI de la comunidad (plantillas que comparten los demás; utilízalas bajo tu propio riesgo).
+    - AMI de la comunidad (plantillas que comparten los demás, que debes utilizar bajo tu propio riesgo).
 
  2. Seleccionar un [tipo de instancia](https://aws.amazon.com/ec2/instance-types/). El tipo de instancia que elijas determina lo siguiente:
     - Memoria (RAM),
@@ -487,7 +490,7 @@ Los pasos en el lanzamiento de una instancia son:
     
     El nombre de instancia indica la familia, la generación, y tamaño. Por ejemplo, una imagen llamada t3.large es una instancia de propósito general (familia T), con hardware de tercera generación (3), con 2 cpu y 8 Gb de RAM (Large). 
 
- 3. Identificar o crear el par de claves pública-privada para acceder a la máquina vía SSH. La privada se ha de descargar y guardar en un lugar seguro. Si la clave se pierde no hay manera de recuperarla después, en la ventana de propiedades de la máquina virtual.
+ 3. Identificar o crear el par de claves pública-privada para acceder a la máquina vía SSH. La privada se ha de descargar y guardar en un lugar seguro. Si la clave se pierde no hay manera de recuperarla después, ni siquiera en la ventana de propiedades de la máquina virtual.
 
  4. Especificar la configuración de red: en qué región, VPC y subred colocaremos la instancia.
 
@@ -511,17 +514,17 @@ El seguiente ejemplo de AWS CLI lanza una instancia:
       --security-groups MySecurityGroup \
       --region us-east-1
 
-Una vez lanzada una máquina virtual, si dentro de ella accedemos a http://169.254.169.254/latest/meta-data/ , dicha máquina puede acceder a muchos datos de su configuración.
+Una vez lanzada una máquina virtual, si dentro de ella accedemos a http://169.254.169.254/latest/meta-data/ , dicha máquina mostrará muchos datos de su configuración.
 
 Las métricas de las instancias se monitorizan en Amazon CloudWatch.
 
-Además de pagar por capacidad hardware de la instancia y por tiempo de uso, también la manera en que se pidió la instancia incide en el precio final. Se pueden solicitar instancias de cuatro maneras. De mayor a menor costo estas maneras son:
+Además de pagar por capacidad hardware de la instancia y por tiempo de uso, también la manera en que se pide la instancia incide en el precio final. Se pueden solicitar instancias de cuatro maneras. De mayor a menor costo estas maneras son:
 
-  * Alojamientos dedicados, que son servidores físicos con hardware dedicado a un único cliente. No ejecutaran instancias de otra organización más que la tuya. Son una buena opción cuando existen restricciones de licencia para el software que desea ejecutar en Amazon EC2 o cuando tienes requisitos normativos o de cumplimiento específicos que le impiden utilizar las demás opciones de implementación.
+  * Alojamientos dedicados, que son servidores físicos con hardware dedicado a un único cliente. No ejecutaran instancias de otra organización más que la tuya. Son una buena opción cuando existen restricciones de licencia para el software que deseas ejecutar en Amazon EC2 o cuando tienes requisitos normativos o de cumplimiento específicos que te impiden utilizar las demás opciones de implementación.
 
   * Instancias bajo demanda, que son las instancias que levantas cuando las necesitas. Son una buena opción para aplicaciones con cargas de trabajo a corto plazo, con picos de demanda o impredecibles, o para pruebas. Ofrecen la mayor flexibilidad, sin contratos y con tarifas bajas. 
 
-  * Instancias reservadas, que te permiten reservar capacidad de cómputo durante un año o tres años, con costos de funcionamiento menores por hora. Si esperas un uso predecible o estable, pueden proporcionar ahorros sustanciales en comparación con las instancias bajo demanda. Pagas por el tiempo en que se programan las instancias, incluso si no las utilizas. 
+  * Instancias reservadas, que te permiten reservar capacidad de cómputo de un año a tres años, con costos de funcionamiento menores por hora. Si esperas un uso predecible o estable, pueden proporcionar ahorros sustanciales en comparación con las instancias bajo demanda. Pagas por el tiempo en que se programan las instancias, incluso si no las utilizas. 
 
   * Instancias de spot, que te permiten pujar por instancias EC2 no utilizadas, lo que reduce los costos de manera significativa. Son una buena opción si tus aplicaciones pueden tolerar interrupciones con una notificación de advertencia de 2 minutos. De forma predeterminada, las instancias se terminan, pero puedes configurarlas para que se detengan o hibernen.
 
@@ -555,7 +558,7 @@ AWS Elastic Beanstalk proporciona una plataforma (PaaS) que facilita la implemen
 
 Por favor, lee: [Lambda](https://docs.aws.amazon.com/lambda/latest/dg/)
 
-AWS Lambda es una plataforma de cómputo que no requiere ningún tipo de administración. AWS Lambda le permite ejecutar código que se activa ante eventos AWS sin necesidad de aprovisionar ni administrar servidores. Solo paga por el tiempo de cómputo que consume. Este concepto posibilita una escalabilidad masiva a un costo menor que el de la ejecución ininterrumpida de servidores para respaldar las mismas cargas de trabajo.
+AWS Lambda es una plataforma de cómputo que no requiere ningún tipo de administración. AWS Lambda te permite ejecutar código que se activa ante eventos AWS sin necesidad de aprovisionar ni administrar servidores. Solo pagas por el tiempo de cómputo que consumes. Proporciona una escalabilidad masiva a un costo menor que el de la ejecución ininterrumpida de servidores para respaldar las mismas cargas de trabajo.
 
 
 ---
@@ -570,7 +573,7 @@ Hay tres tipos de almacenamiento:
 
   * Almacenamiento de ficheros, donde los datos se guardan en una estructura jerárquica en carpetas y subcarpetas, como por ejemplo un disco de red compartido (EFS).
 
-  * Almacenamiento de objetos, donde los datos se guardan como objetos utilizando además metadatos y una clave identificadora del objeto, como por ejemplo un alojamiento web de ficheros (S3).
+  * Almacenamiento de objetos, donde los datos se guardan como objetos utilizando una clave identificadora del objeto, como por ejemplo un alojamiento web de ficheros (S3).
 
 
 
@@ -582,7 +585,7 @@ Amazon S3 es un servicio de almacenamiento de objetos capaz de guardar cantidade
 
 S3 se puede utilizar para almacenar contenido multimedia, backups, o datos para cálculos y analíticas. S3 se puede incluso utilizar para almacenar sitios web estáticos. Para esto último, en la configuración del almacén de las páginas escogemos "alojamiento web" y damos permisos que permitan acceder a todo el mundo a los ficheros. Entonce se podrá acceder a la web estática sin necesidad de un servidor web, bien directamente a través de S3 o bien a través de la CDN CloudFront asociada al almacén S3.
 
-Guardamos objetos en almacenes llamados "buckets" ("cubos") que hemos declarado previamente. Cada bucket debe tener un nombre único para todo AWS, independientemente de la región donde esté. ¡Atención! : esto quiere decir que dos usuarios de AWS no pueden poner el mismo nombre a un bucket.
+Guardamos los objetos en almacenes llamados "buckets" ("cubos") que hemos declarado previamente. Cada bucket debe tener un nombre único para todo AWS, independientemente de la región donde esté. ¡Atención! : esto quiere decir que dos usuarios de AWS no pueden poner el mismo nombre a un bucket.
 
 Cada objeto tiene una clave, que es el nombre asignado a dicho objeto. Usamos la clave para recuperar el objeto.
 
@@ -604,20 +607,20 @@ El almacenamiento de objetos no es jerárquico, como el almacenamiento de ficher
 
 Si hemos activado la característica de versionado en un bucket, los objetos que se almacenan también tienen un número de versión. Dentro de un bucket, un objeto queda identificado por su clave y por su número de versión.
 
-El versionado protege los objetos de sobre-escrituras y borrados accidentales. Cada vez que se sube un mismo objeto, éste obtiene un nuevo número de versión. Con control de versiones activado, cuando solicitamos un objeto obtenemos la última versión de dicho objeto. Para obtener una versión específica debemos incluir la versión en la petición. Con control de versiones activado, cuando borramos un objeto se le añade una marca de borrado. Para poder borrarlo definitivamente debemos acompañar la petición con la versión que queremos borrar.
+El [versionado](https://docs.aws.amazon.com/AmazonS3/latest/userguide/versioning-workflows.html) protege los objetos de sobre-escrituras y borrados accidentales. Cada vez que se sube un mismo objeto, éste obtiene un nuevo número de versión. Con control de versiones activado, cuando solicitamos un objeto obtenemos la última versión de dicho objeto. Para obtener una versión específica debemos incluir la versión en la petición. Con control de versiones activado, cuando borramos un objeto se le añade una marca de borrado. Para poder borrarlo definitivamente debemos acompañar la petición con la versión que queremos borrar.
 
 La durabilidad describe el promedio de perdidas de objetos esperadas a lo largo del año. En S3 la durabilidad es de 11 nueves, que quiere decir que hay un 0.000000001 por ciento de posibilidad de perder un objeto. Por ejemplo, si guardamos diez mil objetos en Amazon S3 podemos esperar perder un objeto cada diez millones de años. Amazon S3 guarda redundantemente nuestros objetos en múltiples dispositivos en múltiples lugares en la región de tu elección. Si un dispositivo falla, Amazon lo detecta y repara la redundancia. Además Amazon S3 verifica regularmente la integridad de los datos utilizando sumas de comprobación. Por último S3 permite replicación de datos entre regiones.
 
-La disponibilidad se refiere a la habilidad de acceder rápidamente a los datos cuando lo necesitemos. Amazon S3 proporciona 4 nueves (o 99.99%) de disponibilidad. También proporciona capacidad ilimitada para guardar datos.
+La disponibilidad se refiere a la habilidad de acceder rápidamente a los datos cuando lo necesitemos. Amazon S3 proporciona 4 nueves (ó 99.99%) de disponibilidad. También proporciona capacidad ilimitada para guardar datos.
 
-La seguridad viene proporcionada por múltiples maneras de controlar el acceso a los nuestros datos, como permisos en los buckets y en los objetos, y cifrado de los datos. Por defecto, todos los buckets S3 son privados, y solo los usuarios a los que se permite explícitamente acceso pueden leer o guardar datos. Por defecto, todos los buckets S3 están encriptados.
+La seguridad viene proporcionada por múltiples maneras de controlar el acceso a nuestros datos, como por ejemplo permisos en los buckets y en los objetos, y cifrado de los datos. Por defecto, todos los buckets S3 son privados, y solo los usuarios a los que se permite explícitamente acceso pueden leer o guardar datos. Por defecto, todos los buckets S3 están encriptados.
 
 Otra característica del almacenamiento S3 es el alto rendimiento: nuestras aplicaciones pueden conseguir miles de transacciones por segundo guardando o recuperando datos de S3, que automáticamente escala a los más altos ratios de peticiones por segundo.
 
 Algunas características extra del almacenamiento S3 son:
   - subidas multi-parte para subir en paralelo y en caso de error solo resubir una parte;
   - transferencias aceleradas a través de los puntos de presencia de CloudFront;
-  - Transfer Family permite subir y bajar datos de S3 y EFS mediante SFTP, FTPS y AS2.
+  - Transfer Family permite subir y bajar datos de S3 y EFS mediante los protocolos SFTP, FTPS y AS2.
 
 
 
@@ -627,7 +630,7 @@ Lo que pagamos por almacenar objetos en buckets depende del tamaño de los objet
 
 Amazon S3 ofrece diferentes de clases de almacenamiento diseñadas para distintos casos de uso:
 
-  * S3 Standard está diseñado con el fin de proporcionar almacenamiento de objetos de alta durabilidad, alta disponibilidad y alto rendimiento para los datos a los que se accede con frecuencia. Debido a que ofrece baja latencia y alto rendimiento, Amazon S3 Standard es adecuado para una amplia variedad de casos prácticos, como las aplicaciones en la nube, los sitios web dinámicos, la distribución de contenido, las aplicaciones para dispositivos móviles y videojuegos y el análisis de big data. Proporciona durabilidad replicando a través de tres zonas de disponibilidad.
+  * S3 Standard está diseñado con el fin de proporcionar almacenamiento de objetos de alta durabilidad, alta disponibilidad y alto rendimiento para los datos a los que se accede con frecuencia. Debido a que ofrece baja latencia y alto rendimiento, Amazon S3 Standard es adecuado para una amplia variedad de casos prácticos, como las aplicaciones en la nube, los sitios web dinámicos, la distribución de contenido, las aplicaciones para dispositivos móviles y videojuegos y el análisis de big data. Proporciona durabilidad replicando los datos a través de tres zonas de disponibilidad.
 
   * S3 Standard-IA (Infrequent Access) ofrece los beneficios de Amazon S3 Standard, pero utiliza unos costos diferentes que lo hace más adecuado para almacenar datos accedidos con poca frecuencia pero que todavía necesitan un acceso rápido, como por ejemplo logs o fotos antiguas. A los datos guardados aquí se les aplica una tarifa de 30 días como mínimo, y aunque cueste menos dinero almacenar los datos que en S3 Standard, cuesta más dinero recuperarlos.
 
@@ -703,7 +706,7 @@ Una instancia de base de datos es un entorno de base de datos aislado que puede 
 
 ![](Cloud.rds1.png)
 
-Como muchas bases de datos son migradas de nuestras premisas a la nube, normalmente escogemos el mismo motor que teníamos en premisas para la base de datos, para facilitar la transición. Sin embargo Amazon ha desarrollado un nuevo motor, [Aurora](https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/), que es un motor basado en MySQL y PostgreSQL pero optimizado para el cloud. Facilita la migración des de MySQL y PostgreSQL pero da mayor rendimiento, gran fiabilidad y escalabilidad, a un costo bajo.
+Como muchas bases de datos son migradas de nuestras premisas a la nube, normalmente escogemos el mismo motor que teníamos en premisas para la base de datos, para facilitar la transición. Sin embargo Amazon ha desarrollado un nuevo motor, [Aurora](https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/), que es un motor basado en MySQL y PostgreSQL pero optimizado para el cloud. Aurora facilita la migración des de MySQL y PostgreSQL pero da mayor rendimiento, gran fiabilidad y escalabilidad, a un costo bajo.
 
 Amazon también ha desarrollado otra tecnologia de BBDD relacional, [Redshift](https://docs.aws.amazon.com/redshift/latest/gsg/), específica para grandes bases de datos, que optimiza y facilita todo tipo de analíticas. Es ideal para "Big Data" y "Bussiness Inteligence".
 
@@ -711,7 +714,7 @@ RDS se puede ejecutar fuera de una VPC, pero también dentro, normalmente en la 
 
 ![](Cloud.rds2.png)
 
-Una función de Amazon RDS es "despliegues Multi-AZ", que consiste en la posibilidad de configurar para alta disponibilidad la instancia de base de datos replicando dicha instancia en otra zona de disponibilidad de la misma VPC, y manteniendo la réplica en espera por si la instancia primaria cae. Se trata de la típica replicación maestro-esclavo en que la copia va recibiendo las mismas transacciones que la instancia original. Si cae la primaria, será AWS el que ponga en línea automáticamente la instancia de base de datos que estaba en espera como nueva instancia principal.
+Una función de Amazon RDS es "despliegues Multi-AZ", que consiste en la posibilidad de configurar para alta disponibilidad la instancia de base de datos replicando dicha instancia en otra zona de disponibilidad de la misma VPC, y manteniendo la réplica en espera por si la instancia primaria cae. Se trata de la típica replicación maestro-esclavo en que la copia va recibiendo las mismas transacciones que la instancia original. Si cae la primaria, AWS será el que ponga en línea automáticamente la instancia de base de datos que estaba en espera como nueva instancia principal.
 
 ![](Cloud.rds3.png)
 
@@ -738,15 +741,17 @@ No voy a explicar como funciona internamente DynamoDB , o las claves de particio
 LOGS Y MONITORIZACIÓN
 ---------------------
 
+Algunos servicios de AWS relacionados con monitorización y supervisión del sistema son:
+
   * CloudTrail: registra acciones que se realizaron desde cónsola web, cli, o SDK (llamadas a la API, eventos de seguridad)
 
   * CloudWatch: registra métricas, uso de recursos
 
-  * Logs de servicios: logs de S3, flujos de VPC, solicitudes al ELB
+  * Logs de servicios: logs de S3, flujos de VPC, solicitudes a ELB
 
   * Trusted Advisor: recomendaciones sobre optimización de costos, seguridad, tolerancia a errores, límites de servicio y mejora del rendimiento
 
-  * Config: audita y evalúa las configuraciones de los recursos de AWS, mantiene un histórico de cambios
+  * Config: audita y evalúa las configuraciones de los recursos de AWS, mantiene un histórico de cambios de las configuraciones
 
   * EventBridge: bus de eventos, conecta aplicaciones a eventos
 
@@ -758,7 +763,7 @@ LOGS Y MONITORIZACIÓN
 
   * Shield: protege la red contra ataques DDOS
 
-  * WA (well-architected): helps you review the state of your workloads and compare them to the latest AWS architectural best practices
+  * WA (well-architected): te ayuda a revisar el estado de tus cargas de trabajo y los compara con buenas prácticas de arquitectura en la nube
 
 
 ---
