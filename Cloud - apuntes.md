@@ -67,18 +67,18 @@ Si clasificamos los servicios en la nube por responsabilidad del proveedor y del
 
   * Software como Servicio (SaaS): te ofrece una aplicación. Un ejemplo de SaaS es GMail. El proveedor se responsabiliza del hardware, del sistema operativo y de la aplicación, y tu de los datos.
 
-| Responsabilidad (**C**liente / **P**roveedor) | Premisas |  Iaas |  Paas |  Saas |
-|-----------------------------------------------|:--------:|:-----:|:-----:|:-----:|
-| Accounts & identities                         |   **C**  | **C** | **C** | **C** |
-| Data                                          |   **C**  | **C** | **C** | **C** |
-| Applications                                  |   **C**  | **C** | **C** |   P   |
-| Runtime                                       |   **C**  | **C** |   P   |   P   |
-| Middleware                                    |   **C**  | **C** |   P   |   P   |
-| Operating systems (Guest OS)                  |   **C**  | **C** |   P   |   P   |
-| Network controls                              |   **C**  | **C** |   P   |   P   |
-| Physical hosts & hypervisor                   |   **C**  |   P   |   P   |   P   |
-| Physical network                              |   **C**  |   P   |   P   |   P   |
-| Physical data center                          |   **C**  |   P   |   P   |   P   |
+| Responsabilidad ([C]liente / [P]roveedor) | Premisas |  Iaas |  Paas |  Saas |
+|-------------------------------------------|:--------:|:-----:|:-----:|:-----:|
+| Accounts & identities                     |   **C**  | **C** | **C** | **C** |
+| Data                                      |   **C**  | **C** | **C** | **C** |
+| Applications                              |   **C**  | **C** | **C** |   P   |
+| Runtime                                   |   **C**  | **C** |   P   |   P   |
+| Middleware                                |   **C**  | **C** |   P   |   P   |
+| Operating systems (Guest OS)              |   **C**  | **C** |   P   |   P   |
+| Network controls                          |   **C**  | **C** |   P   |   P   |
+| Physical hosts & hypervisor               |   **C**  |   P   |   P   |   P   |
+| Physical network                          |   **C**  |   P   |   P   |   P   |
+| Physical data center                      |   **C**  |   P   |   P   |   P   |
 
 Aquí tienes los [nombres de los servicios en cada Cloud](https://comparecloud.in/) y aquí otra [comparación de los servicios en cada Cloud](https://cloudcomparisontool.com/).
 
