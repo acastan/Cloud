@@ -1,7 +1,7 @@
 RESUMEN DE CLOUD COMPUTING Y AWS
 ================================
 
-Este es mi resumen sobre cloud computing y AWS. Intento que esta introducción a cloud sea independiente del proveedor de cloud: Amazon AWS, Microsoft Azure, Oracle Cloud, Google Cloud. Los conceptos de cloud que tocaré son comunes a todos los proveedores, sin embargo los ejemplos concretos serán con AWS, y los temas seguirán el orden del curso AWS Cloud Foundations, que es: 
+Este es mi resumen sobre cloud computing y AWS. Intento que esta introducción a cloud sea independiente del proveedor de cloud: Amazon AWS, Microsoft Azure, Oracle Cloud, Google Cloud. Los conceptos de cloud que tocaré son comunes a todos los proveedores, sin embargo los ejemplos concretos serán con AWS, y los temas seguirán el orden del curso AWS Cloud Foundations.
 
 Tabla de contenido:
 
@@ -754,27 +754,27 @@ LOGS Y MONITORIZACIÓN
 
 Algunos servicios de AWS relacionados con monitorización y supervisión del sistema son:
 
-  * CloudTrail: registra acciones que se realizaron desde cónsola web, cli, o SDK (llamadas a la API, eventos de seguridad)
+  * [CloudTrail](https://docs.aws.amazon.com/awscloudtrail/latest/userguide/): registra acciones que se realizaron desde cónsola web, cli, o SDK (llamadas a la API, eventos de seguridad)
 
-  * CloudWatch: registra métricas, uso de recursos
+  * [CloudWatch](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/): registra métricas, uso de recursos
 
-  * Logs de servicios: logs de S3, flujos de VPC, solicitudes a ELB
+  * [Logs de servicios](https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/): logs de S3, flujos de VPC, solicitudes a ELB
 
-  * Trusted Advisor: recomendaciones sobre optimización de costos, seguridad, tolerancia a errores, límites de servicio y mejora del rendimiento
+  * [Config](https://docs.aws.amazon.com/es_es/config/latest/developerguide/): audita y evalúa las configuraciones de los recursos de AWS, mantiene un histórico de cambios de las configuraciones
 
-  * Config: audita y evalúa las configuraciones de los recursos de AWS, mantiene un histórico de cambios de las configuraciones
+  * [Inspector](https://docs.aws.amazon.com/inspector/latest/user/): escanea vulnerabilidades en instancias EC2 y contenedores ECR
 
-  * EventBridge: bus de eventos, conecta aplicaciones a eventos
+  * [Shield](https://docs.aws.amazon.com/es_es/waf/latest/developerguide/shield-chapter.html): protege la red contra ataques DDOS
 
-  * Inspector: escanea vulnerabilidades en instancias EC2 y contenedores ECR
+  * [Security Hub](https://docs.aws.amazon.com/es_es/securityhub/latest/userguide/): comprobaciones continuas, alertas y recomendaciones de seguridad (¿IDS basado en firmas?)
 
-  * Security Hub: comprobaciones continuas, alertas y recomendaciones de seguridad (¿IDS basado en firmas?)
+  * [GuardDuty](https://docs.aws.amazon.com/guardduty/latest/ug/): identifica acciones inesperadas, no autorizadas y malintencionadas (¿IDS basado en anomalías?)
 
-  * GuardDuty: identifica acciones inesperadas, no autorizadas y malintencionadas (¿IDS basado en anomalías?)
+  * [EventBridge](https://docs.aws.amazon.com/eventbridge/latest/userguide/): bus de eventos, conecta aplicaciones a eventos
 
-  * Shield: protege la red contra ataques DDOS
+  * [WA (well-architected)](https://docs.aws.amazon.com/wellarchitected/latest/userguide/): te ayuda a revisar el estado de tus cargas de trabajo y los compara con buenas prácticas de arquitectura en la nube
 
-  * WA (well-architected): te ayuda a revisar el estado de tus cargas de trabajo y los compara con buenas prácticas de arquitectura en la nube
+  * [Trusted Advisor](https://docs.aws.amazon.com/awssupport/latest/user/trusted-advisor.html): recomendaciones sobre optimización de costos, seguridad, tolerancia a errores, límites de servicio y mejora del rendimiento
 
 
 ---
@@ -783,43 +783,129 @@ Algunos servicios de AWS relacionados con monitorización y supervisión del sis
 ARQUITECTURA
 ------------
 
-The AWS Well Architected Framework is a guide that documents best practices, and is organized into six pillars:
+Por favor, lee: [AWS Well Architected Framework](https://docs.aws.amazon.com/wellarchitected/latest/framework/welcome.html)
 
-  * Operational Excellence: Adresses the ability to run systems and gain insight into their operations to deliver business value. It also addresses the ability to continuously improve supporting processes and procedures.
+El marco AWS Well Architected es una guía que documenta buenas prácticas y que se organiza en seis pilares: excelencia operativa, seguridad, fiabilidad, eficiencia del rendimiento, optimización de costos, y sostenibilidad.
 
-  * Security: Adresses the ability to protect information, systems, and assets while delivering business value through risk assessments and mitigation strategies.
+![](Cloud.pilares.png)
 
-  * Reliability: Adresses the ability of a system to recover from infrastructure or service disruptions and dynamically acquire computing resources to meet demand. It also addresses the ability of a system to mitigate disruptions, such as misconfigurations or transient network issues. 
+  * Pilar de la excelencia operacional:
+  
+    Aborda la habilidad de generar valor de negocio, de generar una buena experiencia de usuario, de mejorar continua en los procesos y procedimientos, de organizar tu equipo, de mejorar la respuesta a incidentes, de evolucionar.
+  
+    Principios de diseño:
 
-  * Performance Efficiency: Adresses to maximize the performance by using computation resources efficiently, and to maintain that efficiency as the demand changes.
+    - Utiliza IaC en la medida que puedas, para limitar errores humanos. Define toda la infraestructura y tareas como código, activado automáticamente por eventos.
 
-  * Cost Optimization: Adresses to reduce costs.
+    - Realiza cambios -sin afectar a los clientes, siempre que sea posible- en pequeños incrementos que puedan revertirse si fallan.
 
-  * Sustainability: addresses the ability to build architectures that maximize efficiency and reduce waste.
+    - Establece días para revisar los procedimientos, validar su eficacia y asegurarte de que tu equipo está familiarizado con ellos.
 
-As you design a solution, think carefully about trade offs so you can select an optimal approach: trade consistency, durability, and space for time and latency to deliver higher performance.
+    - Aprende de los errores operativos para impulsar mejoras. Comparte lo aprendido con tu equipo y con toda tu organización.
 
-*Implement scalability. Ensure that your architecture can handle changes in demand.*
+    - Anticipa los problemas, identificando las posibles fuentes de errores para poder eliminarlas o mitigarlas. Prueba los procedimientos de respuesta para asegurarte de que son eficaces y de que tu equipo conoce su ejecución. Establece días regulares para probar las cargas de trabajo y las respuestas del equipo a eventos simulados.
 
-*Automate the provisioning, termination, and configuration of resources.*
+  * Pilar de la seguridad:
+  
+    Aborda la habilidad de proteger la información, los sistemas, y los activos, evaluando riesgos y preparando estrategias de mitigación.
+  
+    Principios de diseño:
 
-*Provision your computing infrastructure using code instead of manual processes.*
+    - Implementa el principio de mínimo privilegio y aplica la separación de obligaciones con la autorización adecuada para cada interacción con los recursos de AWS.
 
-*Treat resources as disposable, taking advantage of the dynamically provisioned nature of cloud computing.*
+    - Supervisar en tiempo real los registros y métricas, y audita las acciones y los cambios en el entorno.
 
-*Use loosely coupled components, designing architectures with independent components.*
+    - Aplica la defensa en profundidad y aplica controles de seguridad a todas las capas de la arquitectura (red periférica, nube virtual privada, subred, balanceador de carga, instancias, sistemas operativos, y aplicaciones).
 
-*Design services, not servers.*
+    - Automatizar las prácticas recomendadas de seguridad.
 
-*Choose the right database solution. Match technology to the workload, not the other way around.*
+    - Clasifica los datos en niveles de sensibilidad, y protégelos en tránsito y en reposo con cifrado y permisos de acceso.
 
-*Avoid single points of failure. Assume everything fails. Then, design backward.*
+    - Para evitar accidentes mantén las personas alejadas de los datos, utilizando herramientas que reduzcan la necesidad de tratamiento manual de los datos.
 
-*Optimizing for cost.*
+    - Prepárate para los incidentes de seguridad. Ten protocolos de respuesta y pruébalos en simulaciones de incidentes.
 
-*Use caching to minimize redundant data retrieval operations, improving performance and cost.*
+  * Pilar de la fiabilidad:
+  
+    Se centra en asegurar que una carga de trabajo realice su función prevista de forma correcta y constante, y en la rápida recuperación después de que se produzcan errores, y en la adquisición dinámica de recursos para satisfacer la demanda.
 
-*Build security into every layer of your infrastructure.*
+    La disponibilidad es el porcentaje de tiempo que un sistema funciona con normalidad o realiza correctamente las operaciones que se esperan de él.
+
+    | Disponibilidad | Interrupción por año | Tipos de aplicación                      |
+    |----------------|:--------------------:|------------------------------------------|
+    | 99 %           |  3 días y 15 horas   | Trabajos de procesamiento por lotes      |
+    | 99,9 %         | 8 horas y 45 minutos | Aplicaciones no críticas                 |
+    | 99,99 %        |           52 minutos | Distribución de video, Comercio en línea |
+    | 99,999 %       |            5 minutos | Transacciones de ATM, Telecomunicaciones |
+
+    Un sistema de alta disponibilidad es aquel que puede soportar cierto grado de degradación sin dejar de estar disponible, normalmente debido a la redundancia de componentes (tolerancia a errores) y a la escalabilidad.
+  
+    Principios de diseño:
+
+    - Evita los puntos únicos de fallo, diseñando arquitecturas con componentes independientes o muy poco acoplados. Asume que todo falla y entonces diseña hacia atrás.
+
+    - Configura los sistemas para que se desencadene una recuperación automática cuando los indicadores de rendimiento bajen de un cierto umbral.
+
+    - Recrea situaciones que provocan errores, para probar tus procedimientos de recuperación.
+
+    - Escala horizontalmente para aumentar la alta disponibilidad y tolerancia a errores. Por ejemplo, si sustituyes una instancia de cómputo grande por varias pequeñas en las que distribuyes el trabajo, si cae una pequeña el sistema continuará dando respuesta.
+
+    - Supervisa el uso del sistema, y programa autoescalado para automatizar la
+    incorporación o eliminación de recursos para satisfacer la demanda.
+
+    - Utiliza automatización para realizar cambios en la infraestructura. Automatiza la provisión, la terminación y la configuración de recursos.
+
+  * Pilar de la eficiencia del rendimiento:
+  
+    Se centra en la capacidad de utilizar recursos de TI de forma eficiente para satisfacer la carga de trabajo y mantener esa eficiencia a medida que cambia la demanda o evolucionan las tecnologías.
+
+    Principios de diseño:
+
+    - Utiliza las tecnologías avanzadas que ya implemente tu proveedor cloud (NOSQL, IA, etc.), para que tu equipo se pueda centrar en el desarrollo de productos en lugar de en el aprovisionamiento y la administración de recursos. Diseña servicios, no servidores.
+
+    - Utiliza en la medida que puedas servicios sin servidor, para eliminar la carga operativa de mantener servidores.
+
+    - Globalízate en minutos, implementando sistemas en varias regiones de AWS para proporcionar una latencia más baja y una mejor experiencia del cliente a un coste mínimo. Acerca el contenido al cliente mediante CDN y puntos de presencia. Utiliza cachés para minimizar peticiones de datos redundantes, aumentando así la eficiencia a la par que minimizas costes.
+
+    - Realice pruebas comparativas de diferentes tipos de instancias, almacenamiento o configuraciones.
+
+    - Escoge la tecnología más adecuada a lo que intentas lograr. La tecnología debe corresponder a la carga de trabajo, no al revés.
+
+  * Pilar de la optimización de costes:
+  
+    Aborda la reducción de gastos para nuestra solución, evitando costes innecesarios. Para ello hace falta analizar gastos a lo largo del tiempo, y seleccionar recursos adecuados y en cantidades correctas.
+    
+    Principios de diseño:
+
+    - Dedica tiempo y recursos ala optimización de costes.
+
+    - Para los recursos que no utilices, y paga sólo por los recursos que en ese momento necesites.
+
+    - Mide el rendimiento general de tu solución junto con el costo asociado.
+
+    - Dejar de gastar dinero en infraestructura IT en premisas. Que tu proveedor cloud administre el máximo de infraestructura y servicios, y tú céntrate en tus clientes y proyectos empresariales.
+
+    - Identifica el uso y el costo de cada sistema y de cada usuario.
+
+  * Pilar de la sostenibilidad:
+  
+    Aborda la construcción de arquitecturas que maximizan la eficiencia y reducen el consumo de energía.
+
+    Principios de diseño:
+
+    - Mide el impacto de tu carga en la nube, revisando recursos y emisiones por unidad de trabajo.
+
+    - Establece metas de sostenibilidad, cómo reducir almacenamiento o cálculo en una aplicación.
+    
+    - Maximiza la utilización de recursos y elimina recursos poco utilizados.
+
+    - Utiliza hardware más eficiente.
+
+    - Utiliza servicios en la nube administrados por el proveedor.
+    
+    - Reduce la cantidad de recursos y de actualizaciones de hardware que el usuario necesita para utilizar tus servicios.
+
+Cuando diseñes una solución, analiza con cautela el balance entre pilares para poder ofrecer una aproximación óptima.
 
 Aquí tienes una lista de [buenas prácticas con AWS](https://roadmap.sh/best-practices/aws)
 
