@@ -12,6 +12,7 @@ Tabla de contenido:
   * [SEGURIDAD](#seguridad)
   * [REDES](#redes)
   * [CÓMPUTO](#cómputo)
+  * [BALANCEO DE CARGA Y AUTOESCALADO](#balanceo-de-carga-y-autoescalado)
   * [ALMACENAMIENTO](#almacenamiento)
   * [BASES DE DATOS](#bases-de-datos)
   * [LOGS Y MONITORIZACIÓN](#logs-y-monitorización)
@@ -570,6 +571,76 @@ AWS Elastic Beanstalk proporciona una plataforma (PaaS) que facilita la implemen
 Por favor, lee: [Lambda](https://docs.aws.amazon.com/lambda/latest/dg/)
 
 AWS Lambda es una plataforma de cómputo que no requiere ningún tipo de administración. AWS Lambda te permite ejecutar código que se activa ante eventos AWS sin necesidad de aprovisionar ni administrar servidores. Solo pagas por el tiempo de cómputo que consumes. Proporciona una escalabilidad masiva a un costo menor que el de la ejecución ininterrumpida de servidores para respaldar las mismas cargas de trabajo.
+
+
+---
+
+
+BALANCEO DE CARGA Y AUTOESCALADO
+--------------------------------
+
+Cuando aumentan las peticiones y la carga de trabajo sobre nuestro servidor, para atender todo el trabajo podemos crecer mejorando el hardware (escalado vertical) o teniendo más servidores entre los que repartir las tareas (escalado horizontal). Esta última opción suele ser más barata y tiene la ventaja de que si un servidor cae, el resto de réplicas continúan en pié atendiendo peticiones (alta disponibilidad). Sin embargo, para ello necesitamos una herramienta que reciba las peticiones y las reparta entre los servidores, según algún criterio o algoritmo. Dicha herramienta es el [balanceador de carga](https://es.wikipedia.org/wiki/Equilibrador_de_carga) .
+
+
+
+### Balanceo de carga
+
+Por favor, lee: [Elastic Load Balancing](https://docs.aws.amazon.com/es_es/elasticloadbalancing/latest/userguide/)
+
+Elastic Load Balancing (ELB) es el servicio de AWS que distribuye el tráfico entrante entre varios destinos, como instancias de EC2, contenedores, direcciones IP, y funciones Lambda, en una única zona de disponibilidad o en varias.
+
+El balanceador de carga se puede configurar para realizar pruebas de salud de cada instancia. Si una instancia no supera la prueba, queda apartada hasta que se recupere y las peticiones se reparten entre el resto de instancias que están funcionales.
+
+Sin embargo, AWS ELB no automatiza el inicio ni la parada de las instancias. Eso lo hace AWS Auto Scaling, de la que hablaremos más tarde.
+
+Para configurar un balanceador de carga necesitamos tres cosas:
+
+ 1. Escoger el tipo de balanceador. En AWS ELB existen tres tipos:
+
+    * El balanceador de carga de aplicaciones, que opera en el nivel de la aplicación (capa 7 del modelo OSI). Es ideal para el balanceo de carga del tráfico web HTTP y HTTPS. Si una petición web abre una sesión en un servidor, redirigirá el resto de peticiones de la misma sesión al mismo servidor.
+
+    * El balanceador de carga de red, que opera en el nivel de transporte de la red (capa 4 del modelo OSI). Es capaz de gestionar millones de solicitudes por segundo mientras mantiene latencias muy bajas.
+
+    * El balanceador de carga clásico, que es una implementación más antigua. AWS recomienda utilizar un balanceador de carga de aplicaciones o un balanceador de carga de red en lugar del clásico.
+
+ 2. Escogeremos las instancias sobre las que queremos repartir las peticiones, y las meteremos en un grupo, que asociaremos al balanceador.
+
+ 3. Crearemos un "listener", donde especificaremos el protocolo y puerto del tráfico que deseamos balancear en ese grupo. ¿Por qué? Piensa que un balanceador de carga puede recibir trafico que no era de la aplicación a balancear en ese grupo.
+
+
+
+### Autoescalado
+
+Por favor, lee: [EC2 Auto Scaling](https://docs.aws.amazon.com/autoscaling/ec2/userguide/)
+
+El escalado es la capacidad de aumentar o reducir la capacidad de cómputo de una
+aplicación.
+
+Considera por ejemplo una aplicación de venta online que durante el año tiene una cierta carga de trabajo regular, pero que cuando llega la época de las rebajas triplica el número de peticiones y tiene una carga de trabajo mucho mayor.
+
+Si asignamos más capacidad de la necesaria para poder satisfacer siempre la demanda más alta, estaremos ejecutando recursos que no se utilizarán por completo la mayor parte del tiempo, incurriendo en costos innecesarios.
+
+Pero si asignamos la mínima capacidad necesaria para no incurrir en dichos costos, entonces las épocas en que hay picos de actividad la aplicación irá mucho más lenta o no podrá atender toda la demanda.
+
+Con el autoescalado podremos disponer siempre de las instancias que en ese momento se necesiten, siendo AWS quien automáticamente levante instancias o las apague en función de la demanda y de parámetros que hayamos configurado.
+
+Para configurar el autoescalado necesitamos tres cosas:
+
+ 1. Escogeremos la plantilla de la instancia a lanzar. Dicha platilla tendrá escogido el software (AMI), el hardware (tipo de instancia), los permisos (el rol de IAM), el cortafuegos personal (grupo de seguridad), y el disco duro (volúmenes de EBS).
+
+ 2. Crearemos un grupo de autoescalado que asociaremos a algunas subredes y a un balanceador de carga. Las instancias que cree el servicio pertenecerán a dicho grupo. Para crear el grupo de autoescalado seguramente nos pidan el número de instancias mínimo, el máximo y el deseado.
+
+ 3. Seleccionaremos la política de escalado, es decir, cuando se escala:
+
+    * Para mantener instancias: realizará comprobaciones periódicas del número de instancias y si alguna está en mal estado la terminará y levantará una nueva instancia automáticamente.
+
+    * Escalado manual: especificaremos el número de instancias mínimo, el máximo y el deseado.
+
+    * Escalado programado: especificaremos cuantas instancias queremos en función de la fecha y hora.
+
+    * Escalado dinámico: iniciará o terminará instancias en funcion de unas métricas que especifiquemos sobre el uso de recursos (CPU, memoria, etc).
+
+    * Escalado predictivo: a partir de miles de datos de uso en el tiempo de nuestras instancias, una herramienta de aprendizaje automático (IA) preparará un plan de escalado.
 
 
 ---
