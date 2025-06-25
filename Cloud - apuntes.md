@@ -180,7 +180,7 @@ class EC2InstanceWrapper:
             raise
 ```
 
-En el caso de AWS encuentras una [referencia](https://docs.aws.amazon.com/sdkref/latest/guide/overview.html) y [ejemplos](https://github.com/awsdocs/aws-doc-sdk-examples?tab=readme-ov-file) en <https://docs.aws.amazon.com/cli/>
+En el caso de AWS encuentras una [referencia](https://docs.aws.amazon.com/sdkref/latest/guide/overview.html) y [ejemplos](https://github.com/awsdocs/aws-doc-sdk-examples?tab=readme-ov-file) en <https://aws.amazon.com/developer/tools/>
 
 
 
